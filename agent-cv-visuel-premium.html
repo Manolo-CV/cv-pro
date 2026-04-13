@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Designer Pro — Agent IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f2ee;--white:#ffffff;--ink:#1a1a1a;--muted:#888;--border:#e0ddd7;--accent:#e8450a;--surface:#fafaf8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+header{background:var(--ink);padding:20px 36px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-box{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:17px;color:#fff}
+.logo h1{font-family:'Fraunces',serif;font-size:19px;color:#fff}
+.logo p{font-size:10px;color:#666;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.hbadge{font-size:11px;color:#aaa;border:1px solid #333;padding:5px 13px;border-radius:20px;letter-spacing:0.8px;text-transform:uppercase}
+
+.app{display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 76px)}
+
+/* FORM */
+.fpanel{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;padding:28px 24px;display:flex;flex-direction:column;gap:20px}
+.fpanel::-webkit-scrollbar{width:4px}
+.fpanel::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
+.fsec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:2px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.frow.one{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:6px}
+label{font-size:11px;font-weight:600;color:#555;letter-spacing:.3px;text-transform:uppercase}
+label .req{color:var(--accent)}
+input,textarea,select{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,69,10,.07)}
+input::placeholder,textarea::placeholder{color:#bbb}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+
+/* PHOTO UPLOAD */
+.photo-upload{border:2px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface)}
+.photo-upload:hover{border-color:var(--accent);background:#fff8f5}
+.photo-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-preview{width:68px;height:68px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block;border:3px solid var(--border)}
+.photo-placeholder-up{width:56px;height:56px;border-radius:50%;background:#f0ede8;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.photo-upload p{font-size:12px;color:var(--muted)}
+.photo-upload span{font-size:11px;color:#bbb;margin-top:2px;display:block}
+
+/* TEMPLATES */
+.tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.tpl{border:2px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.tpl:hover{border-color:#aaa;transform:translateY(-2px)}
+.tpl.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,69,10,.1)}
+.tpl.active::after{content:'✓';position:absolute;top:5px;right:5px;background:var(--accent);color:#fff;width:17px;height:17px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.tpl-prev{height:76px;padding:8px;display:flex;flex-direction:column;gap:3px}
+.tpl-nm{font-size:9px;font-weight:700;text-align:center;padding:5px;border-top:1px solid rgba(0,0,0,.07);letter-spacing:.5px}
+
+/* COLORS */
+.colors{display:flex;gap:7px;flex-wrap:wrap}
+.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;position:relative;flex-shrink:0}
+.cdot.active{border-color:var(--ink);transform:scale(1.15)}
+.cdot.active::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+
+/* LANGS */
+.langs{display:flex;flex-wrap:wrap;gap:7px}
+.lbtn{padding:6px 11px;border-radius:7px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .15s;font-weight:500}
+.lbtn:hover{border-color:#aaa;color:var(--ink)}
+.lbtn.active{border-color:var(--accent);background:rgba(232,69,10,.06);color:var(--accent);font-weight:600}
+
+/* GEN BTN */
+.mode-btn{flex:1;padding:9px 10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .15s;font-weight:500;text-align:center}
+.mode-btn:hover{border-color:#aaa;color:var(--ink)}
+.mode-btn.active{border-color:var(--accent);background:rgba(232,69,10,.06);color:var(--accent);font-weight:700}
+.genbtn{background:var(--ink);color:#fff;border:none;border-radius:11px;padding:14px 20px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .2s;width:100%}
+.genbtn:hover{background:#2d2d2d;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.genbtn:disabled{background:#ccc;cursor:not-allowed;transform:none;box-shadow:none}
+
+.err{background:#fff0ee;border:1.5px solid #ffccbb;border-radius:9px;padding:11px 14px;color:#c0392b;font-size:12.5px;display:none}
+
+/* PREVIEW */
+.ppanel{background:var(--bg);overflow-y:auto;display:flex;flex-direction:column}
+.ppanel::-webkit-scrollbar{width:4px}
+.ppanel::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+.empty-st{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);padding:40px;text-align:center}
+.empty-st .eicon{font-size:52px;opacity:.3}
+.empty-st h3{font-family:'Fraunces',serif;font-size:22px;color:var(--ink);opacity:.35}
+.empty-st p{font-size:13px;max-width:260px;line-height:1.6;opacity:.5}
+.load-st{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center}
+.ring{width:52px;height:52px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-st h3{font-family:'Fraunces',serif;font-size:20px}
+.load-st p{font-size:13px;color:var(--muted)}
+.res-st{display:none;flex-direction:column;height:100%}
+
+/* TOOLBAR */
+.toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.tl-left{display:flex;align-items:center;gap:10px}
+.tl-left h3{font-family:'Fraunces',serif;font-size:17px}
+.pill{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.pill-g{background:#e8f8ef;color:#1a7a3f;border:1px solid #b8e8cc}
+.pill-p{background:#f0edff;color:#6c5ce7;border:1px solid #d4cfff}
+.tl-right{display:flex;gap:8px}
+.tbtn{padding:8px 16px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--ink);display:flex;align-items:center;gap:6px;transition:all .15s}
+.tbtn:hover{border-color:var(--ink)}
+.tbtn.pr{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tbtn.pr:hover{background:#333}
+
+/* OUTPUT TABS */
+.otabs{display:flex;background:var(--white);border-bottom:1px solid var(--border);padding:0 24px}
+.otab{padding:12px 20px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.otab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* CV RENDER */
+.cv-area{padding:32px;flex:1;display:flex;flex-direction:column;align-items:center;gap:24px}
+.cv-page{width:100%;max-width:720px;background:#fff;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.12);overflow:hidden;min-height:900px}
+
+/* ── CV TEMPLATES ── */
+.cv-mod{display:grid;grid-template-columns:230px 1fr;min-height:900px}
+.cv-mod .sb{padding:30px 22px;display:flex;flex-direction:column;gap:22px}
+.cv-mod .mn{padding:36px 30px;background:#fff;display:flex;flex-direction:column;gap:22px}
+.cv-ele{display:grid;grid-template-columns:220px 1fr;min-height:900px}
+.cv-ele .sb{padding:30px 20px;display:flex;flex-direction:column;gap:20px}
+.cv-ele .mn{padding:38px 30px;background:#fff;display:flex;flex-direction:column;gap:20px}
+.cv-bld{min-height:900px;display:flex;flex-direction:column}
+.cv-bld .banner{padding:34px 40px;display:flex;align-items:center;gap:26px}
+.cv-bld .grid2{display:grid;grid-template-columns:1fr 1fr;flex:1}
+.cv-bld .col{padding:26px 30px}
+.cv-bld .col-r{border-left:1px solid #eee}
+.cv-sft{display:grid;grid-template-columns:200px 1fr;min-height:900px}
+.cv-sft .sb{padding:28px 18px;display:flex;flex-direction:column;gap:18px}
+.cv-sft .mn{padding:34px 28px;background:#fff;display:flex;flex-direction:column;gap:18px}
+.cv-min{min-height:900px;padding:48px 54px;background:#fff;display:flex;flex-direction:column;gap:26px}
+.cv-min .hrow{display:flex;align-items:center;gap:26px;padding-bottom:26px;border-bottom:1px solid #eee}
+.cv-min .two{display:grid;grid-template-columns:1fr 260px;gap:36px}
+.cv-gld{display:grid;grid-template-columns:215px 1fr;min-height:900px}
+.cv-gld .sb{padding:30px 20px;display:flex;flex-direction:column;gap:20px}
+.cv-gld .mn{padding:38px 30px;background:#fffdf8;display:flex;flex-direction:column;gap:20px}
+
+/* SHARED CV ELEMENTS */
+.ph-wrap{overflow:hidden;flex-shrink:0}
+.ph-wrap img{width:100%;height:100%;object-fit:cover}
+.ph-ph{display:flex;align-items:center;justify-content:center;font-size:28px}
+.cv-name-lg{font-family:'Fraunces',serif;line-height:1.15;margin-bottom:4px}
+.cv-name-cor{font-family:'Cormorant Garamond',serif;line-height:1.15;margin-bottom:4px}
+.cv-ttl{text-transform:uppercase;letter-spacing:1.2px}
+.sb-h4{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;padding-bottom:5px}
+.ci{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px;font-size:12px}
+.ci .ico{font-size:12px;flex-shrink:0;margin-top:1px}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-h h3{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.sec-h::after{content:'';flex:1;height:1px;background:currentColor;opacity:.15}
+.profile-p{font-size:13px;line-height:1.75;color:#555}
+.exp-it{margin-bottom:13px;padding-left:13px;border-left:2px solid}
+.exp-dt{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#999;margin-bottom:2px}
+.exp-ti{font-size:13px;font-weight:700;margin-bottom:2px}
+.exp-co{font-size:12px;margin-bottom:5px}
+.exp-de{font-size:12px;color:#666;line-height:1.6}
+.edu-it{margin-bottom:10px}
+.edu-dg{font-size:13px;font-weight:700}
+.edu-sc{font-size:12px;color:#666;margin-bottom:2px}
+.edu-dt{font-size:10px;color:#999;letter-spacing:.5px;text-transform:uppercase}
+.sk-cloud{display:flex;flex-wrap:wrap;gap:7px}
+.sk-tag{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600}
+.sk-bar-w{margin-bottom:8px}
+.sk-bar-l{font-size:11.5px;margin-bottom:4px}
+.sk-bar{height:4px;border-radius:4px;overflow:hidden}
+.sk-bar-f{height:100%;border-radius:4px}
+.sk-dot-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sk-dot-n{font-size:11.5px}
+.sk-dots{display:flex;gap:3px}
+.sk-dot{width:8px;height:8px;border-radius:50%}
+.lang-i{font-size:12px;margin-bottom:5px}
+
+/* LETTER */
+.letter-area{padding:32px;max-width:720px;margin:0 auto;width:100%}
+.letter-box{background:#fff;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.12);padding:48px 52px;font-size:14px;line-height:1.9;color:var(--ink);white-space:pre-wrap;min-height:600px}
+
+@media(max-width:860px){.app{grid-template-columns:1fr}.ppanel{min-height:60vh}}
+@media(max-width:600px){header{padding:16px 20px}.fpanel{padding:20px 16px}.frow{grid-template-columns:1fr}.tpls{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-box">C</div>
+    <div>
+      <h1>CV Designer Pro</h1>
+      <p>Agent IA · Multilingue · Photo · Fiverr Ready</p>
+    </div>
+  </div>
+  <div class="hbadge">Claude AI</div>
+</header>
+
+<div class="app">
+<!-- ══ FORM PANEL ══ -->
+<div class="fpanel">
+
+  <!-- PHOTO -->
+  <div>
+    <div class="fsec">📸 Photo du client (optionnel)</div>
+    <div class="photo-upload" id="photoUpload">
+      <input type="file" accept="image/*" id="photoInput" onchange="handlePhoto(event)">
+      <div id="phPh"><div class="photo-placeholder-up">👤</div><p>Clique ou glisse la photo ici</p><span>JPG, PNG, WEBP</span></div>
+      <div id="phPv" style="display:none"><img id="phImg" class="photo-preview" src="" alt=""><p style="font-size:12px;color:#888">Photo chargée ✓</p><span style="font-size:11px;color:#bbb">Clique pour changer</span></div>
+    </div>
+  </div>
+
+  <!-- TEMPLATES -->
+  <div>
+    <div class="fsec">🎨 Template visuel</div>
+    <div class="tpls">
+      <div class="tpl active" data-tpl="modern" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto"></div>
+          <div style="height:3px;width:55%;background:rgba(255,255,255,.4);border-radius:2px;margin:4px auto 2px"></div>
+          <div style="height:2px;width:75%;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto"></div>
+        </div>
+        <div class="tpl-nm" style="background:#1a1a2e;color:#fff">MODERN</div>
+      </div>
+      <div class="tpl" data-tpl="elegant" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:linear-gradient(135deg,#2d4a3e,#1a2f28)">
+          <div style="width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.2);margin:0 auto"></div>
+          <div style="height:3px;width:50%;background:rgba(255,255,255,.4);border-radius:2px;margin:4px auto 2px"></div>
+          <div style="height:2px;width:65%;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto"></div>
+        </div>
+        <div class="tpl-nm" style="background:#2d4a3e;color:#a8d5b5">ELEGANT</div>
+      </div>
+      <div class="tpl" data-tpl="bold" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:linear-gradient(135deg,#c0392b,#8e1a10);padding:6px">
+          <div style="display:flex;gap:5px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.2)"></div><div style="flex:1"><div style="height:3px;background:rgba(255,255,255,.5);border-radius:2px;margin-bottom:3px"></div><div style="height:2px;background:rgba(255,255,255,.2);border-radius:2px;width:65%"></div></div></div>
+        </div>
+        <div class="tpl-nm" style="background:#c0392b;color:#fff">BOLD</div>
+      </div>
+      <div class="tpl" data-tpl="soft" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)">
+          <div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.25);margin:0 auto"></div>
+          <div style="height:3px;width:48%;background:rgba(255,255,255,.5);border-radius:2px;margin:4px auto 2px"></div>
+          <div style="height:2px;width:62%;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto"></div>
+        </div>
+        <div class="tpl-nm" style="background:#6c5ce7;color:#fff">SOFT</div>
+      </div>
+      <div class="tpl" data-tpl="minimal" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:#fff;border-bottom:1px solid #eee;padding:7px">
+          <div style="display:flex;gap:5px;align-items:center"><div style="width:20px;height:20px;border-radius:50%;background:#eee"></div><div style="flex:1"><div style="height:3px;background:#333;border-radius:2px;margin-bottom:3px;width:65%"></div><div style="height:2px;background:#ddd;border-radius:2px"></div></div></div>
+          <div style="height:1px;background:#eee;margin:5px 0"></div><div style="height:2px;background:#eee;border-radius:2px;width:75%"></div>
+        </div>
+        <div class="tpl-nm" style="background:#f0f0f0;color:#333">MINIMAL</div>
+      </div>
+      <div class="tpl" data-tpl="gold" onclick="selTpl(this)">
+        <div class="tpl-prev" style="background:linear-gradient(135deg,#2c1810,#6b4c11)">
+          <div style="width:26px;height:26px;border-radius:4px;background:rgba(212,175,55,.3);margin:0 auto"></div>
+          <div style="height:3px;width:50%;background:rgba(212,175,55,.6);border-radius:2px;margin:4px auto 2px"></div>
+          <div style="height:2px;width:65%;background:rgba(212,175,55,.2);border-radius:2px;margin:0 auto"></div>
+        </div>
+        <div class="tpl-nm" style="background:#2c1810;color:#d4af37">GOLD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLORS -->
+  <div>
+    <div class="fsec">🎨 Couleur d'accent</div>
+    <div class="colors" id="colorsWrap">
+      <div class="cdot active" style="background:#1a1a2e" data-c="#1a1a2e" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#2d4a3e" data-c="#2d4a3e" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#c0392b" data-c="#c0392b" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#6c5ce7" data-c="#6c5ce7" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#0984e3" data-c="#0984e3" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#00b894" data-c="#00b894" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#e17055" data-c="#e17055" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#2c1810" data-c="#2c1810" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#2d3436" data-c="#2d3436" onclick="selColor(this)"></div>
+      <div class="cdot" style="background:#6d4c41" data-c="#6d4c41" onclick="selColor(this)"></div>
+    </div>
+  </div>
+
+  <!-- LANGUE -->
+  <div>
+    <div class="fsec">🌍 Langue des documents</div>
+    <div class="langs" id="langsWrap">
+      <button class="lbtn active" data-lang="français" onclick="selLang(this)">🇫🇷 FR</button>
+      <button class="lbtn" data-lang="anglais" onclick="selLang(this)">🇬🇧 EN</button>
+      <button class="lbtn" data-lang="espagnol" onclick="selLang(this)">🇪🇸 ES</button>
+      <button class="lbtn" data-lang="allemand" onclick="selLang(this)">🇩🇪 DE</button>
+      <button class="lbtn" data-lang="italien" onclick="selLang(this)">🇮🇹 IT</button>
+      <button class="lbtn" data-lang="portugais" onclick="selLang(this)">🇵🇹 PT</button>
+      <button class="lbtn" data-lang="arabe" onclick="selLang(this)">🇸🇦 AR</button>
+      <button class="lbtn" data-lang="néerlandais" onclick="selLang(this)">🇳🇱 NL</button>
+    </div>
+  </div>
+
+  <!-- INFOS PERSO -->
+  <div>
+    <div class="fsec">👤 Informations personnelles</div>
+    <div class="frow" style="margin-bottom:10px">
+      <div class="fg"><label>Prénom & Nom <span class="req">*</span></label><input id="nom" placeholder="Marie Dupont"></div>
+      <div class="fg"><label>Poste visé <span style="color:#bbb;font-size:10px">(optionnel)</span></label><input id="poste" placeholder="Laisser vide si pas de poste précis"></div>
+    </div>
+    <div class="frow" style="margin-bottom:10px">
+      <div class="fg"><label>Email</label><input id="email" placeholder="marie@email.com"></div>
+      <div class="fg"><label>Téléphone</label><input id="tel" placeholder="+33 6 12 34 56"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Ville / Pays</label><input id="ville" placeholder="Paris, France"></div>
+      <div class="fg"><label>LinkedIn / Site</label><input id="linkedin" placeholder="linkedin.com/in/marie"></div>
+    </div>
+  </div>
+
+  <!-- MODE CIBLAGE -->
+  <div>
+    <div class="fsec">🎯 Type de candidature</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="mode-btn active" id="modeCible" onclick="setMode('cible')">🏢 Entreprise précise</button>
+      <button class="mode-btn" id="modeGeneral" onclick="setMode('general')">🌐 Candidature générale</button>
+    </div>
+    <div id="blockCible">
+      <div class="frow">
+        <div class="fg"><label>Entreprise <span class="req">*</span></label><input id="entreprise" placeholder="Google, startup..."></div>
+        <div class="fg"><label>Info entreprise</label><input id="infoEntreprise" placeholder="startup SaaS en croissance..."></div>
+      </div>
+    </div>
+    <div id="blockGeneral" style="display:none">
+      <div class="fg"><label>Domaine recherché</label><input id="domaine" placeholder="Ex: marketing digital, développement web, comptabilité..."></div>
+      <p style="font-size:11px;color:#aaa;margin-top:7px;line-height:1.5">Le CV et la lettre seront rédigés de façon polyvalente, adaptés à toute offre dans ce domaine.</p>
+    </div>
+    <div class="frow" style="margin-top:11px">
+      <div class="fg"><label>Secteur</label>
+        <select id="secteur">
+          <option value="">Sélectionner...</option>
+          <option>Tech & Informatique</option><option>Marketing & Communication</option>
+          <option>Commerce & Vente</option><option>Finance & Comptabilité</option>
+          <option>Ressources Humaines</option><option>Santé & Médical</option>
+          <option>Éducation</option><option>Hôtellerie & Restauration</option>
+          <option>BTP</option><option>Logistique</option><option>Art & Design</option><option>Autre</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARCOURS -->
+  <div>
+    <div class="fsec">💼 Parcours</div>
+    <div class="fg" style="margin-bottom:10px">
+      <label>Expériences professionnelles <span class="req">*</span></label>
+      <textarea id="experience" placeholder="Ex : 3 ans chef de projet chez Renault, 2 ans consultant chez Deloitte..."></textarea>
+    </div>
+    <div class="fg" style="margin-bottom:10px">
+      <label>Formation & Diplômes</label>
+      <textarea id="formation" placeholder="Master HEC 2020, Licence Paris 1..." style="min-height:60px"></textarea>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Compétences & Outils</label><textarea id="competences" placeholder="Excel, Photoshop, Python..." style="min-height:60px"></textarea></div>
+      <div class="fg"><label>Langues parlées</label><textarea id="langues" placeholder="Français (natif), Anglais C1..." style="min-height:60px"></textarea></div>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div>
+    <div class="fsec">⚙️ Options</div>
+    <div class="frow">
+      <div class="fg"><label>Niveau</label>
+        <select id="niveau">
+          <option value="débutant">Débutant (- 2 ans)</option>
+          <option value="intermédiaire" selected>Intermédiaire (2-5 ans)</option>
+          <option value="confirmé">Confirmé (+ 5 ans)</option>
+          <option value="reconversion">Reconversion</option>
+          <option value="jeune diplômé">Jeune diplômé</option>
+        </select>
+      </div>
+      <div class="fg"><label>Ton</label>
+        <select id="ton">
+          <option value="professionnel et dynamique">Pro & Dynamique</option>
+          <option value="formel et classique">Formel & Classique</option>
+          <option value="moderne et enthousiaste">Moderne & Enthousiaste</option>
+          <option value="créatif">Créatif & Original</option>
+          <option value="sobre et concis">Sobre & Concis</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg" style="margin-top:10px">
+      <label>Document(s) à générer</label>
+      <select id="docMode">
+        <option value="both">CV + Lettre de motivation</option>
+        <option value="cv">CV seulement</option>
+        <option value="letter">Lettre seulement</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="err" id="errBox">⚠️ Remplis au minimum : Nom et Expériences.</div>
+  <button class="genbtn" id="genBtn" onclick="generate()">⚡ Générer les documents</button>
+</div>
+
+<!-- ══ PREVIEW PANEL ══ -->
+<div class="ppanel" id="ppanel">
+  <div class="empty-st" id="emptySt">
+    <div class="eicon">🎨</div>
+    <h3>Aperçu en direct</h3>
+    <p>Remplis le formulaire et clique sur "Générer" pour voir le CV coloré apparaître ici.</p>
+  </div>
+  <div class="load-st" id="loadSt">
+    <div class="ring"></div>
+    <h3>Génération en cours...</h3>
+    <p>Claude rédige et met en forme vos documents</p>
+  </div>
+  <div class="res-st" id="resSt">
+    <div class="toolbar">
+      <div class="tl-left">
+        <h3>Documents prêts ✓</h3>
+        <span class="pill pill-g">Livrable</span>
+        <span class="pill pill-p" id="pillLang">🇫🇷 Français</span>
+      </div>
+      <div class="tl-right">
+        <button class="tbtn" onclick="printCV()">🖨️ PDF</button>
+        <button class="tbtn" onclick="copyLtr()">📋 Copier lettre</button>
+        <button class="tbtn pr" onclick="resetAll()">🔄 Nouveau</button>
+      </div>
+    </div>
+    <div class="otabs">
+      <button class="otab active" id="tabCV" onclick="showTab('cv')">📄 CV Visuel</button>
+      <button class="otab" id="tabLtr" onclick="showTab('letter')">✍️ Lettre</button>
+    </div>
+    <div id="cvTab" class="cv-area"><div class="cv-page" id="cvOut"></div></div>
+    <div id="ltrTab" style="display:none"><div class="letter-area"><div class="letter-box" id="ltrOut"></div></div></div>
+  </div>
+</div>
+</div>
+
+<script>
+let curTpl='modern', curColor='#1a1a2e', curLang='français', photoB64=null, curMode='cible';
+
+function setMode(m){
+  curMode=m;
+  document.getElementById('modeCible').classList.toggle('active',m==='cible');
+  document.getElementById('modeGeneral').classList.toggle('active',m==='general');
+  document.getElementById('blockCible').style.display=m==='cible'?'block':'none';
+  document.getElementById('blockGeneral').style.display=m==='general'?'block':'none';
+}
+
+function handlePhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    photoB64=ev.target.result;
+    document.getElementById('phPh').style.display='none';
+    document.getElementById('phPv').style.display='block';
+    document.getElementById('phImg').src=photoB64;
+  };
+  r.readAsDataURL(f);
+}
+function selTpl(el){document.querySelectorAll('.tpl').forEach(t=>t.classList.remove('active'));el.classList.add('active');curTpl=el.dataset.tpl}
+function selColor(el){document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));el.classList.add('active');curColor=el.dataset.c}
+function selLang(el){document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');curLang=el.dataset.lang}
+function showTab(t){
+  document.getElementById('cvTab').style.display=t==='cv'?'flex':'none';
+  document.getElementById('ltrTab').style.display=t==='letter'?'block':'none';
+  document.querySelectorAll('.otab').forEach(x=>x.classList.remove('active'));
+  document.getElementById(t==='cv'?'tabCV':'tabLtr').classList.add('active');
+}
+function printCV(){
+  const h=document.getElementById('cvOut').outerHTML;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff}
+  ${document.querySelector('style').textContent}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style>
+  </head><body style="padding:0">${h}</body></html>`);
+  w.document.close();setTimeout(()=>w.print(),800);
+}
+function copyLtr(){
+  navigator.clipboard.writeText(document.getElementById('ltrOut').textContent).then(()=>{
+    const b=document.querySelector('.tbtn:nth-child(2)');b.textContent='✅ Copié !';
+    setTimeout(()=>b.textContent='📋 Copier lettre',2000);
+  });
+}
+function resetAll(){
+  document.getElementById('emptySt').style.display='flex';
+  document.getElementById('loadSt').style.display='none';
+  document.getElementById('resSt').style.display='none';
+}
+
+async function generate(){
+  const nom=document.getElementById('nom').value.trim();
+  const poste=document.getElementById('poste').value.trim();
+  const experience=document.getElementById('experience').value.trim();
+  const err=document.getElementById('errBox');
+  if(!nom||!experience){err.style.display='block';return;}
+  err.style.display='none';
+
+  const posteContext = poste
+    ? `Poste visé: ${poste}`
+    : `Poste: NON PRÉCISÉ — le client dépose un CV et une lettre ouverts, sans poste ciblé. Mets un titre professionnel générique adapté à son profil.`;
+
+  const f=id=>document.getElementById(id)?.value.trim()||'';
+  const docMode=f('docMode');
+  const entreprise = curMode==='cible' ? f('entreprise') : '';
+  const infoEntreprise = curMode==='cible' ? f('infoEntreprise') : '';
+  const domaine = curMode==='general' ? f('domaine') : '';
+
+  document.getElementById('emptySt').style.display='none';
+  document.getElementById('loadSt').style.display='flex';
+  document.getElementById('resSt').style.display='none';
+
+  const cibleContext = curMode==='cible'
+    ? `Entreprise cible: ${entreprise||'non précisée'}|Infos entreprise: ${infoEntreprise||'—'}`
+    : `Mode candidature GÉNÉRALE (aucune entreprise précise). Domaine visé: ${domaine||'non précisé'}. Le CV et la lettre doivent être polyvalents, utilisables pour n'importe quelle offre dans ce domaine.`;
+
+  const info=`Nom:${nom}|${posteContext}|${cibleContext}|Email:${f('email')||'—'}|Tel:${f('tel')||'—'}|Ville:${f('ville')||'—'}|LinkedIn:${f('linkedin')||'—'}|Secteur:${f('secteur')||'—'}|Niveau:${f('niveau')}|Ton:${f('ton')}|Expériences:${experience}|Formation:${f('formation')||'—'}|Compétences:${f('competences')||'—'}|Langues:${f('langues')||'—'}`;
+
+  const letterInstruction = curMode==='general'
+    ? `La lettre doit être une lettre de motivation GÉNÉRALE et polyvalente en ${curLang}, adaptable à tout recruteur dans le domaine visé. Elle ne doit pas mentionner une entreprise précise. Commence par "Madame, Monsieur," et reste ouverte.`
+    : `La lettre doit être personnalisée pour l'entreprise ${entreprise} en ${curLang}.`;
+
+  const prompt=`Tu es un expert RH. Génère les documents EN ${curLang.toUpperCase()}.
+Réponds UNIQUEMENT en JSON valide, sans markdown ni backticks.
+
+{
+  "cv": {
+    "name":"...","title":"...","email":"...","phone":"...","location":"...","linkedin":"...",
+    "profile":"Profil pro percutant 3-4 lignes en ${curLang}",
+    "experiences":[{"title":"...","company":"...","date":"...","description":"..."}],
+    "education":[{"degree":"...","school":"...","date":"..."}],
+    "skills":["skill1","skill2","skill3","skill4","skill5","skill6"],
+    "languages":["Langue (niveau)"],
+    "skillLevels":[{"name":"Compétence","level":85}]
+  },
+  "letter":"Lettre complète ~300 mots en ${curLang} avec formule de politesse adaptée"
+}
+
+${docMode==='cv'?'Pour "letter" mets "".':""}
+${docMode==='letter'?'Pour "cv" mets null.':""}
+${letterInstruction}
+Données: ${info}`;
+
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
+    });
+    const data=await res.json();
+    let raw=(data.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(raw);
+
+    if((docMode==='both'||docMode==='cv')&&p.cv) renderCV(p.cv);
+    if((docMode==='both'||docMode==='letter')&&p.letter) document.getElementById('ltrOut').textContent=p.letter;
+
+    document.getElementById('tabCV').style.display=(docMode==='letter')?'none':'';
+    document.getElementById('tabLtr').style.display=(docMode==='cv')?'none':'';
+    showTab(docMode==='letter'?'letter':'cv');
+
+    const flags={français:'🇫🇷',anglais:'🇬🇧',espagnol:'🇪🇸',allemand:'🇩🇪',italien:'🇮🇹',portugais:'🇵🇹',arabe:'🇸🇦',néerlandais:'🇳🇱'};
+    document.getElementById('pillLang').textContent=(flags[curLang]||'🌍')+' '+curLang.charAt(0).toUpperCase()+curLang.slice(1);
+
+    document.getElementById('loadSt').style.display='none';
+    document.getElementById('resSt').style.display='flex';
+  }catch(e){
+    document.getElementById('loadSt').style.display='none';
+    document.getElementById('emptySt').style.display='flex';
+    document.getElementById('errBox').textContent='❌ Erreur de connexion. Réessaie.';
+    document.getElementById('errBox').style.display='block';
+  }
+}
+
+// ══ CV RENDERER ══
+function renderCV(cv){
+  const c=curColor;
+  const photo=photoB64
+    ?`<div class="ph-wrap" style="border-radius:50%;border:3px solid rgba(255,255,255,.3)"><img src="${photoB64}" alt="Photo"></div>`
+    :`<div class="ph-ph" style="border-radius:50%;background:rgba(255,255,255,.1)">👤</div>`;
+
+  // helpers
+  const contacts=(style='light')=>{
+    const col=style==='light'?'rgba(255,255,255,.72)':'#555';
+    return [
+      cv.email&&`<div class="ci" style="color:${col}"><span class="ico">✉</span><span>${cv.email}</span></div>`,
+      cv.phone&&`<div class="ci" style="color:${col}"><span class="ico">📞</span><span>${cv.phone}</span></div>`,
+      cv.location&&`<div class="ci" style="color:${col}"><span class="ico">📍</span><span>${cv.location}</span></div>`,
+      cv.linkedin&&`<div class="ci" style="color:${col}"><span class="ico">🔗</span><span>${cv.linkedin}</span></div>`,
+    ].filter(Boolean).join('');
+  };
+  const sbH4=(label,col='rgba(255,255,255,.35)')=>`<div class="sb-h4" style="border-bottom:1px solid rgba(255,255,255,.1);color:${col}">${label}</div>`;
+  const expHTML=(borderCol=c)=>(cv.experiences||[]).map(e=>`<div class="exp-it" style="border-color:${borderCol}55"><div class="exp-dt">${e.date||''}</div><div class="exp-ti">${e.title||''}</div><div class="exp-co" style="color:${borderCol}">${e.company||''}</div><div class="exp-de">${e.description||''}</div></div>`).join('');
+  const eduHTML=(accentCol=c)=>(cv.education||[]).map(e=>`<div class="edu-it"><div class="edu-dg">${e.degree||''}</div><div class="edu-sc" style="color:${accentCol}">${e.school||''}</div><div class="edu-dt">${e.date||''}</div></div>`).join('');
+  const skCloud=(ac=c)=>`<div class="sk-cloud">${(cv.skills||[]).map(s=>`<span class="sk-tag" style="background:${ac}18;color:${ac};border:1px solid ${ac}30">${s}</span>`).join('')}</div>`;
+  const skBars=`${(cv.skillLevels||[]).slice(0,5).map(s=>`<div class="sk-bar-w"><div class="sk-bar-l" style="color:rgba(255,255,255,.8)">${s.name}</div><div class="sk-bar" style="background:rgba(255,255,255,.15)"><div class="sk-bar-f" style="width:${s.level}%;background:rgba(255,255,255,.75)"></div></div></div>`).join('')}`;
+  const skDots=`${(cv.skillLevels||[]).slice(0,5).map(s=>{const f=Math.round(s.level/20);return`<div class="sk-dot-r"><span class="sk-dot-n" style="color:rgba(255,255,255,.8)">${s.name}</span><div class="sk-dots">${Array.from({length:5},(_,i)=>`<div class="sk-dot" style="background:${i<f?'rgba(255,255,255,.8)':'rgba(255,255,255,.18)'}"></div>`).join('')}</div></div>`;}).join('')}`;
+  const langList=(col='rgba(255,255,255,.72)')=>(cv.languages||[]).map(l=>`<div class="lang-i" style="color:${col}">${l}</div>`).join('');
+  const secH=(title,ac=c)=>`<div class="sec-h" style="color:${ac}"><h3>${title}</h3></div>`;
+  const profBlock=(ac=c)=>cv.profile?`<div>${secH('Profil',ac)}<p class="profile-p">${cv.profile}</p></div>`:'';
+
+  let szPhoto='';
+  if(curTpl==='bold') szPhoto=photoB64?`<div class="ph-wrap" style="width:96px;height:96px;border-radius:50%;border:3px solid rgba(255,255,255,.3)"><img src="${photoB64}" alt=""></div>`:`<div class="ph-ph" style="width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.15);font-size:34px">👤</div>`;
+  else if(curTpl==='minimal'||curTpl==='gold') szPhoto=photoB64?`<div class="ph-wrap" style="width:86px;height:86px;${curTpl==='gold'?'border-radius:4px':'border-radius:50%'};border:2px solid ${curTpl==='minimal'?'#eee':'rgba(212,175,55,.3)'}"><img src="${photoB64}" alt=""></div>`:`<div class="ph-ph" style="width:86px;height:86px;${curTpl==='gold'?'border-radius:4px':'border-radius:50%'};background:${curTpl==='minimal'?'#f5f5f5':'rgba(212,175,55,.1)'};font-size:28px">👤</div>`;
+  else szPhoto=photoB64?`<div class="ph-wrap" style="width:86px;height:86px;border-radius:${curTpl==='elegant'?'10px':'50%'};border:3px solid rgba(255,255,255,.25);margin:0 auto"><img src="${photoB64}" alt=""></div>`:`<div class="ph-ph" style="width:86px;height:86px;border-radius:${curTpl==='elegant'?'10px':'50%'};background:rgba(255,255,255,.1);font-size:30px;margin:0 auto">👤</div>`;
+
+  let html='';
+
+  if(curTpl==='modern'){
+    html=`<div class="cv-mod"><div class="sb" style="background:${c}">
+      ${szPhoto}
+      <div><div class="cv-name-lg" style="font-size:21px;color:#fff;text-align:center">${cv.name||''}</div><div class="cv-ttl" style="font-size:10px;color:rgba(255,255,255,.55);text-align:center;margin-top:3px">${cv.title||''}</div></div>
+      <div>${sbH4('Contact')}${contacts()}</div>
+      ${(cv.skillLevels||[]).length?`<div>${sbH4('Compétences')}${skBars}</div>`:''}
+      ${(cv.languages||[]).length?`<div>${sbH4('Langues')}${langList()}</div>`:''}
+    </div><div class="mn">
+      ${profBlock()}
+      ${(cv.experiences||[]).length?`<div>${secH('Expériences')}${expHTML()}</div>`:''}
+      ${(cv.education||[]).length?`<div>${secH('Formation')}${eduHTML()}</div>`:''}
+      ${(cv.skills||[]).length?`<div>${secH('Compétences')}${skCloud()}</div>`:''}
+    </div></div>`;
+  } else if(curTpl==='elegant'){
+    html=`<div class="cv-ele"><div class="sb" style="background:${c}">
+      ${szPhoto}
+      <div><div class="cv-name-cor" style="font-size:23px;color:#fff;text-align:center">${cv.name||''}</div><div class="cv-ttl" style="font-size:10px;color:rgba(255,255,255,.5);text-align:center;margin-top:3px">${cv.title||''}</div></div>
+      <div>${sbH4('Contact')}${contacts()}</div>
+      ${(cv.skillLevels||[]).length?`<div>${sbH4('Compétences')}${skDots}</div>`:''}
+      ${(cv.languages||[]).length?`<div>${sbH4('Langues')}${langList()}</div>`:''}
+    </div><div class="mn">
+      ${profBlock()}
+      ${(cv.experiences||[]).length?`<div>${secH('Expériences')}${expHTML()}</div>`:''}
+      ${(cv.education||[]).length?`<div>${secH('Formation')}${eduHTML()}</div>`:''}
+      ${(cv.skills||[]).length?`<div>${secH('Compétences & Outils')}${skCloud()}</div>`:''}
+    </div></div>`;
+  } else if(curTpl==='bold'){
+    html=`<div class="cv-bld"><div class="banner" style="background:${c}">
+      ${szPhoto}
+      <div style="flex:1">
+        <div class="cv-name-lg" style="font-size:33px;color:#fff">${cv.name||''}</div>
+        <div class="cv-ttl" style="font-size:12px;color:rgba(255,255,255,.65);margin-bottom:10px">${cv.title||''}</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          ${cv.email?`<span style="font-size:12px;color:rgba(255,255,255,.8)">✉ ${cv.email}</span>`:''}
+          ${cv.phone?`<span style="font-size:12px;color:rgba(255,255,255,.8)">📞 ${cv.phone}</span>`:''}
+          ${cv.location?`<span style="font-size:12px;color:rgba(255,255,255,.8)">📍 ${cv.location}</span>`:''}
+        </div>
+      </div>
+    </div><div class="grid2">
+      <div class="col">
+        ${profBlock()}
+        ${(cv.experiences||[]).length?`<div>${secH('Expériences')}${expHTML()}</div>`:''}
+      </div>
+      <div class="col col-r">
+        ${(cv.education||[]).length?`<div>${secH('Formation')}${eduHTML()}</div>`:''}
+        ${(cv.skills||[]).length?`<div>${secH('Compétences')}${skCloud()}</div>`:''}
+        ${(cv.languages||[]).length?`<div>${secH('Langues')}${(cv.languages||[]).map(l=>`<div style="font-size:13px;margin-bottom:5px;color:#555">${l}</div>`).join('')}</div>`:''}
+      </div>
+    </div></div>`;
+  } else if(curTpl==='soft'){
+    html=`<div class="cv-sft"><div class="sb" style="background:linear-gradient(160deg,${c},${c}bb)">
+      ${szPhoto}
+      <div><div style="font-size:19px;font-weight:700;color:#fff;text-align:center;margin-bottom:3px">${cv.name||''}</div><div class="cv-ttl" style="font-size:10px;color:rgba(255,255,255,.55);text-align:center">${cv.title||''}</div></div>
+      <div>${sbH4('Contact')}${contacts()}</div>
+      ${(cv.skillLevels||[]).length?`<div>${sbH4('Skills')}${skBars}</div>`:''}
+      ${(cv.languages||[]).length?`<div>${sbH4('Langues')}${langList()}</div>`:''}
+    </div><div class="mn">
+      ${profBlock()}
+      ${(cv.experiences||[]).length?`<div>${secH('Expériences')}${expHTML()}</div>`:''}
+      ${(cv.education||[]).length?`<div>${secH('Formation')}${eduHTML()}</div>`:''}
+      ${(cv.skills||[]).length?`<div>${secH('Compétences')}${skCloud()}</div>`:''}
+    </div></div>`;
+  } else if(curTpl==='minimal'){
+    html=`<div class="cv-min">
+      <div class="hrow">
+        ${szPhoto}
+        <div>
+          <div class="cv-name-lg" style="font-size:30px">${cv.name||''}</div>
+          <div class="cv-ttl" style="font-size:12px;color:#999;margin-bottom:9px">${cv.title||''}</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            ${cv.email?`<span style="font-size:12px;color:#666">✉ ${cv.email}</span>`:''}
+            ${cv.phone?`<span style="font-size:12px;color:#666">📞 ${cv.phone}</span>`:''}
+            ${cv.location?`<span style="font-size:12px;color:#666">📍 ${cv.location}</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          ${profBlock()}
+          ${(cv.experiences||[]).length?`<div>${secH('Expériences')}${expHTML()}</div>`:''}
+        </div>
+        <div>
+          ${(cv.education||[]).length?`<div>${secH('Formation')}${eduHTML()}</div>`:''}
+          ${(cv.skills||[]).length?`<div style="margin-top:16px">${secH('Compétences')}${skCloud()}</div>`:''}
+          ${(cv.languages||[]).length?`<div style="margin-top:16px">${secH('Langues')}${(cv.languages||[]).map(l=>`<div style="font-size:13px;margin-bottom:5px;color:#666">${l}</div>`).join('')}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  } else if(curTpl==='gold'){
+    const ga='#d4af37';
+    html=`<div class="cv-gld"><div class="sb" style="background:${c}">
+      ${szPhoto}
+      <div><div class="cv-name-cor" style="font-size:22px;color:#f5e09a;text-align:center">${cv.name||''}</div><div class="cv-ttl" style="font-size:9px;color:rgba(245,224,154,.45);text-align:center;margin-top:3px">${cv.title||''}</div></div>
+      <div>${sbH4('Contact','rgba(245,224,154,.38)')}${contacts()}</div>
+      ${(cv.skillLevels||[]).length?`<div>${sbH4('Compétences','rgba(245,224,154,.38)')}${skBars}</div>`:''}
+      ${(cv.languages||[]).length?`<div>${sbH4('Langues','rgba(245,224,154,.38)')}${langList('rgba(245,224,154,.7)')}</div>`:''}
+    </div><div class="mn">
+      ${profBlock(ga)}
+      ${(cv.experiences||[]).length?`<div>${secH('Expériences',ga)}${expHTML(ga)}</div>`:''}
+      ${(cv.education||[]).length?`<div>${secH('Formation',ga)}${eduHTML(ga)}</div>`:''}
+      ${(cv.skills||[]).length?`<div>${secH('Compétences',ga)}<div class="sk-cloud">${(cv.skills||[]).map(s=>`<span class="sk-tag" style="background:${ga}18;color:${ga};border:1px solid ${ga}30">${s}</span>`).join('')}</div></div>`:''}
+    </div></div>`;
+  }
+
+  document.getElementById('cvOut').innerHTML=html;
+}
+</script>
+</body>
+</html>
