@@ -533,6 +533,7 @@ Données: ${info}`;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",headers:{"Content-Type":"application/json"},
+      "x-api-key": "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",
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
     });
     const data=await res.json();
