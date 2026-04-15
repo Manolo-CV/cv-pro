@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Pro Agent IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f4f2ee;color:#1a1a1a;min-height:100vh}
+header{background:#1a1a1a;padding:18px 24px;display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;background:#e8450a;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:18px;color:#fff}
+header h1{font-family:'Fraunces',serif;font-size:18px;color:#fff}
+header p{font-size:10px;color:#666;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.wrap{max-width:680px;margin:0 auto;padding:24px 16px}
+.card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.card h2{font-family:'Fraunces',serif;font-size:16px;margin-bottom:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.fg{display:flex;flex-direction:column;gap:5px}
+label{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.4px}
+input,textarea,select{background:#fafaf8;border:1.5px solid #e0ddd7;border-radius:9px;padding:10px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:#1a1a1a;outline:none;transition:border-color .2s;width:100%}
+input:focus,textarea:focus,select:focus{border-color:#e8450a}
+textarea{resize:vertical;min-height:75px;line-height:1.6}
+input::placeholder,textarea::placeholder{color:#bbb}
+
+.tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tpl{border:2px solid #e0ddd7;border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.tpl.active{border-color:#e8450a}
+.tp{height:52px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.tn{font-size:9px;font-weight:700;text-align:center;padding:4px;letter-spacing:.5px}
+
+.colors{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.cdot.active{border-color:#1a1a1a;transform:scale(1.15)}
+
+.langs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.lb{padding:6px 11px;border-radius:7px;border:1.5px solid #e0ddd7;background:transparent;color:#888;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .15s;font-weight:500}
+.lb.active{border-color:#e8450a;color:#e8450a;font-weight:700}
+
+.modes{display:flex;gap:8px;margin-bottom:12px}
+.mb{flex:1;padding:9px;border-radius:9px;border:1.5px solid #e0ddd7;background:transparent;color:#888;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;font-weight:500;transition:all .15s;text-align:center}
+.mb.active{border-color:#e8450a;background:rgba(232,69,10,.06);color:#e8450a;font-weight:700}
+
+.pzone{border:2px dashed #e0ddd7;border-radius:12px;padding:14px;text-align:center;cursor:pointer;position:relative;background:#fafaf8;margin-bottom:12px;transition:border-color .2s}
+.pzone:hover{border-color:#e8450a}
+.pzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.pzone p{font-size:12px;color:#888;margin-top:4px}
+#phImg{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 5px;display:block;border:2px solid #e0ddd7}
+
+.genbtn{width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:11px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+.genbtn:hover{background:#333}
+.err{background:#fff0ee;border:1.5px solid #ffccbb;border-radius:9px;padding:11px 14px;color:#c0392b;font-size:12.5px;margin-top:10px;display:none}
+
+.loading{display:none;text-align:center;padding:50px 20px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.ring{width:46px;height:46px;border:3px solid #eee;border-top-color:#e8450a;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading h3{font-family:'Fraunces',serif;font-size:19px;margin-bottom:6px}
+.loading p{color:#888;font-size:13px}
+
+.result{display:none}
+.rtbar{background:#fff;border-radius:12px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.rtbar h3{font-family:'Fraunces',serif;font-size:15px}
+.rbadge{background:#e8f8ef;color:#1a7a3f;border:1px solid #b8e8cc;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
+.rbts{display:flex;gap:7px;flex-wrap:wrap}
+.rbtn{padding:8px 14px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e0ddd7;background:#fff;color:#1a1a1a;transition:all .15s}
+.rbtn:hover{border-color:#1a1a1a}
+.rbtn.pr{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.otabs{display:flex;background:#fff;border-radius:10px 10px 0 0;border-bottom:2px solid #e0ddd7}
+.otab{flex:1;padding:11px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#888;font-family:'Plus Jakarta Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.otab.active{color:#e8450a;border-bottom-color:#e8450a;font-weight:600}
+.cvwrap{background:#fff;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.ltrwrap{background:#fff;border-radius:0 0 12px 12px;padding:28px;font-size:14px;line-height:1.85;white-space:pre-wrap;display:none;box-shadow:0 4px 20px rgba(0,0,0,.1);min-height:300px}
+
+/* CV STYLES */
+.cvm{display:flex;min-height:500px}
+.cvm .sb{width:190px;flex-shrink:0;padding:22px 16px;display:flex;flex-direction:column;gap:16px}
+.cvm .mn{flex:1;padding:26px 22px;background:#fff;display:flex;flex-direction:column;gap:16px}
+.cv-ph{width:76px;height:76px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.3);margin:0 auto}
+.cv-ph img{width:100%;height:100%;object-fit:cover}
+.cv-ph-e{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.15);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:26px}
+.cv-n{font-family:'Fraunces',serif;font-size:19px;color:#fff;text-align:center;margin-bottom:2px;line-height:1.2}
+.cv-t{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;text-align:center}
+.sbh{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:7px}
+.ci{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px;display:flex;gap:5px}
+.skb{margin-bottom:6px}
+.skbl{font-size:10.5px;color:rgba(255,255,255,.75);margin-bottom:3px}
+.skbar{height:3px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.skbf{height:100%;border-radius:3px;background:rgba(255,255,255,.7)}
+.li{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:3px}
+.sech{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.sech h3{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+.sech::after{content:'';flex:1;height:1px;background:currentColor;opacity:.12}
+.pp{font-size:12.5px;line-height:1.7;color:#555}
+.eit{margin-bottom:11px;padding-left:11px;border-left:2px solid}
+.edt{font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#999;margin-bottom:1px}
+.eti{font-size:12.5px;font-weight:700;margin-bottom:1px}
+.eco{font-size:11.5px;margin-bottom:3px}
+.ede{font-size:11.5px;color:#666;line-height:1.55}
+.edit{margin-bottom:8px}
+.edg{font-size:12.5px;font-weight:700}
+.esc{font-size:11.5px;color:#666;margin-bottom:1px}
+.edt2{font-size:9px;color:#999;letter-spacing:.5px;text-transform:uppercase}
+.skc{display:flex;flex-wrap:wrap;gap:5px}
+.skt{padding:4px 9px;border-radius:20px;font-size:10.5px;font-weight:600}
+
+/* MINIMAL */
+.cvmin{padding:36px 40px;background:#fff;min-height:500px}
+.cvmin .hr{display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid #eee;margin-bottom:20px}
+.cvmin-ph{width:76px;height:76px;border-radius:50%;overflow:hidden;border:2px solid #eee;flex-shrink:0}
+.cvmin-ph img{width:100%;height:100%;object-fit:cover}
+.cvmin-ph-e{width:76px;height:76px;border-radius:50%;background:#f5f5f5;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.cvmin-n{font-family:'Fraunces',serif;font-size:24px;line-height:1.1;margin-bottom:3px}
+.cvmin-t{font-size:10px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.crow{display:flex;gap:12px;flex-wrap:wrap}
+.crow span{font-size:11.5px;color:#666}
+.cvmin .two{display:grid;grid-template-columns:1fr 220px;gap:28px}
+
+@media(max-width:580px){
+  .row2{grid-template-columns:1fr}
+  .tpls{grid-template-columns:repeat(2,1fr)}
+  .cvm .sb{width:155px}
+  .cvmin{padding:24px}
+  .cvmin .two{grid-template-columns:1fr}
+  header{padding:14px 16px}
+}
+
+/* TEMPLATE VARIATIONS */
+.tpl-modern .sb{background:var(--tcolor)}
+.tpl-elegant .sb{background:var(--tcolor)}
+.tpl-elegant .cv-ph{border-radius:10px}
+.tpl-soft .sb{background:linear-gradient(160deg,var(--tcolor),var(--tcolor))}
+.tpl-gold .sb{background:var(--tcolor)}
+.tpl-gold .cv-n{color:#f5e09a}
+.tpl-gold .cv-t{color:rgba(245,224,154,.45)}
+.tpl-gold .sbh{color:rgba(245,224,154,.35);border-bottom-color:rgba(245,224,154,.1)}
+.tpl-gold .ci{color:rgba(245,224,154,.75)}
+.tpl-gold .skbl{color:rgba(245,224,154,.8)}
+.tpl-gold .skbar{background:rgba(212,175,55,.2)}
+.tpl-gold .skbf{background:rgba(212,175,55,.75)}
+.tpl-gold .li{color:rgba(245,224,154,.75)}
+.tpl-gold .mn{background:#fffdf8}
+.tpl-bold-wrap{min-height:500px;display:flex;flex-direction:column}
+.tpl-bold-banner{padding:26px 30px;display:flex;align-items:center;gap:20px;background:var(--tcolor)}
+.tpl-bold-banner .cv-n{font-size:26px;font-weight:900;color:#fff;text-align:left;margin-bottom:4px}
+.tpl-bold-banner .cv-t{font-size:11px;color:rgba(255,255,255,.65);letter-spacing:1px;text-transform:uppercase;text-align:left;margin-bottom:8px}
+.tpl-bold-photo{width:85px;height:85px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.3);flex-shrink:0}
+.tpl-bold-photo img{width:100%;height:100%;object-fit:cover}
+.tpl-bold-info{flex:1}
+.tpl-bold-contacts{display:flex;flex-wrap:wrap;gap:10px}
+.tpl-bold-contacts span{font-size:12px;color:rgba(255,255,255,.8)}
+.tpl-bold-grid{display:grid;grid-template-columns:1fr 1fr;flex:1;background:#fff}
+.tpl-bold-col{padding:20px 24px}
+.tpl-bold-col2{padding:20px 24px;border-left:1px solid #eee}
+
+/* ===== DECORATIVE TEMPLATES ===== */
+
+/* AQUARELLE */
+.tpl-aqua-wrap{min-height:500px;background:#fff;position:relative;overflow:hidden}
+.tpl-aqua-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.tpl-aqua-content{position:relative;z-index:1;padding:36px 32px}
+.tpl-aqua-header{margin-bottom:24px}
+.tpl-aqua-name{font-family:'Fraunces',serif;font-size:28px;line-height:1.1;margin-bottom:4px}
+.tpl-aqua-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;opacity:.7}
+.tpl-aqua-contacts{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.tpl-aqua-contacts span{font-size:12px;color:#555}
+.tpl-aqua-grid{display:grid;grid-template-columns:1fr 200px;gap:28px}
+.tpl-aqua-secH{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid}
+
+/* MAGAZINE */
+.tpl-mag-wrap{min-height:500px;background:#fff}
+.tpl-mag-hero{padding:32px 32px 20px;border-bottom:4px solid}
+.tpl-mag-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;opacity:.5}
+.tpl-mag-name{font-family:'Fraunces',serif;font-size:42px;line-height:1;margin-bottom:6px;font-weight:900}
+.tpl-mag-title{font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.tpl-mag-body{display:grid;grid-template-columns:2fr 1px 1fr;gap:0}
+.tpl-mag-main{padding:24px 28px}
+.tpl-mag-divider{background:#eee}
+.tpl-mag-side{padding:24px 20px;background:#fafafa}
+.tpl-mag-secH{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid}
+
+/* NEON */
+.tpl-neon-wrap{min-height:500px;background:#0a0a0f;color:#e0e0ff}
+.tpl-neon-header{padding:30px 28px;border-bottom:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.tpl-neon-grid{display:grid;grid-template-columns:200px 1fr}
+.tpl-neon-side{padding:24px 18px;border-right:1px solid rgba(255,255,255,.08)}
+.tpl-neon-main{padding:24px 24px}
+.tpl-neon-name{font-family:'Fraunces',serif;font-size:26px;color:#fff;margin-bottom:4px;line-height:1.2}
+.tpl-neon-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:12px}
+.tpl-neon-contacts{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:0}
+.tpl-neon-contacts span{font-size:11px;color:rgba(255,255,255,.6)}
+.tpl-neon-sbh{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3)}
+.tpl-neon-ci{font-size:11px;color:rgba(255,255,255,.65);margin-bottom:5px}
+.tpl-neon-secH{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1)}
+
+/* LUXE */
+.tpl-luxe-wrap{min-height:500px;background:#fff}
+.tpl-luxe-header{padding:36px 40px 24px;text-align:center;position:relative}
+.tpl-luxe-ornament{font-size:20px;opacity:.3;margin-bottom:8px}
+.tpl-luxe-name{font-family:'Fraunces',serif;font-size:30px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.tpl-luxe-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.5;margin-bottom:16px}
+.tpl-luxe-line{height:1px;background:currentColor;opacity:.15;margin:0 40px}
+.tpl-luxe-contacts{display:flex;justify-content:center;gap:20px;padding:12px 0;opacity:.6}
+.tpl-luxe-contacts span{font-size:11px}
+.tpl-luxe-body{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(0,0,0,.08)}
+.tpl-luxe-col{padding:24px 30px}
+.tpl-luxe-col2{padding:24px 30px;border-left:1px solid rgba(0,0,0,.08)}
+.tpl-luxe-secH{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;text-align:center;opacity:.4}
+
+/* NATURE */
+.tpl-nat-wrap{min-height:500px;background:#fff;position:relative;overflow:hidden}
+.tpl-nat-bg{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.08}
+.tpl-nat-content{position:relative;z-index:1;display:grid;grid-template-columns:220px 1fr;min-height:500px}
+.tpl-nat-side{padding:28px 20px;display:flex;flex-direction:column;gap:18px}
+.tpl-nat-main{padding:28px 24px;display:flex;flex-direction:column;gap:16px;background:rgba(255,255,255,.92)}
+.tpl-nat-sbh{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.4)}
+.tpl-nat-ci{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px}
+.tpl-nat-secH{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid}
+
+/* GÉOMÉTRIQUE */
+.tpl-geo-wrap{min-height:500px;background:#fff;position:relative;overflow:hidden}
+.tpl-geo-bg{position:absolute;top:0;right:0;width:45%;height:100%;pointer-events:none;z-index:0}
+.tpl-geo-content{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;min-height:500px}
+.tpl-geo-left{padding:32px 28px;display:flex;flex-direction:column;gap:18px}
+.tpl-geo-right{padding:32px 24px;display:flex;flex-direction:column;gap:16px}
+.tpl-geo-name{font-family:'Fraunces',serif;font-size:26px;line-height:1.1;margin-bottom:3px}
+.tpl-geo-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:12px}
+.tpl-geo-secH{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">C</div>
+  <div>
+    <h1>CV Designer Pro</h1>
+    <p>Agent IA Multilingue</p>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="card" id="formCard">
+
+  <h2>Photo (optionnel)</h2>
+  <div class="pzone" id="pzone">
+    <input type="file" accept="image/*" onchange="loadPhoto(event)">
+    <div id="pPh"><div style="font-size:28px">&#128100;</div><p>Clique pour ajouter une photo</p></div>
+    <div id="pPv" style="display:none"><img id="phImg" src="" alt=""><p style="font-size:12px;color:#888">Photo chargee</p></div>
+  </div>
+
+  <h2>Template visuel</h2>
+  <div class="tpls">
+    <div class="tpl active" data-t="modern" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="28" height="60" fill="#1a1a2e"/>
+<circle cx="14" cy="12" r="5" fill="rgba(255,255,255,.4)"/>
+<rect x="7" y="19" width="14" height="2" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="9" y="23" width="10" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="33" y="8" width="30" height="2.5" rx="1" fill="#ddd"/>
+<rect x="33" y="13" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="20" width="28" height="1.5" rx="1" fill="#ddd"/>
+<rect x="33" y="24" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="28" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="33" y="41" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="45" width="23" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">NUIT</div></div>
+    <div class="tpl" data-t="elegant" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="28" height="60" fill="#2d5a3e"/>
+<circle cx="14" cy="12" r="5" fill="rgba(255,255,255,.4)"/>
+<rect x="7" y="19" width="14" height="2" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="9" y="23" width="10" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="33" y="8" width="30" height="2.5" rx="1" fill="#ddd"/>
+<rect x="33" y="13" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="20" width="28" height="1.5" rx="1" fill="#ddd"/>
+<rect x="33" y="24" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="28" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="33" y="41" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="45" width="23" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">SIDEBAR CARRÉ</div></div>
+    <div class="tpl" data-t="bold" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="80" height="18" fill="#c0392b"/>
+<circle cx="12" cy="9" r="5" fill="rgba(255,255,255,.3)"/>
+<rect x="20" y="5" width="30" height="3" rx="1" fill="rgba(255,255,255,.7)"/>
+<rect x="20" y="11" width="20" height="2" rx="1" fill="rgba(255,255,255,.4)"/>
+<rect x="2" y="22" width="36" height="2" rx="1" fill="#ddd"/>
+<rect x="2" y="26" width="28" height="1.5" rx="1" fill="#eee"/>
+<rect x="2" y="30" width="32" height="1.5" rx="1" fill="#eee"/>
+<rect x="2" y="36" width="36" height="2" rx="1" fill="#ddd"/>
+<rect x="2" y="40" width="24" height="1.5" rx="1" fill="#eee"/>
+<rect x="42" y="22" width="36" height="2" rx="1" fill="#ddd"/>
+<rect x="42" y="26" width="28" height="1.5" rx="1" fill="#eee"/>
+<rect x="42" y="30" width="32" height="1.5" rx="1" fill="#eee"/>
+<rect x="42" y="36" width="36" height="2" rx="1" fill="#ddd"/>
+<rect x="42" y="40" width="24" height="1.5" rx="1" fill="#eee"/>
+<line x1="40" y1="20" x2="40" y2="58" stroke="#eee" stroke-width="1"/>
+</svg></div><div class="tn">BANDEAU</div></div>
+    <div class="tpl" data-t="minimal" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<circle cx="10" cy="12" r="6" fill="#eee"/>
+<rect x="20" y="7" width="30" height="3" rx="1" fill="#ccc"/>
+<rect x="20" y="13" width="20" height="2" rx="1" fill="#ddd"/>
+<line x1="0" y1="22" x2="80" y2="22" stroke="#eee" stroke-width="1"/>
+<rect x="2" y="26" width="44" height="2" rx="1" fill="#ddd"/>
+<rect x="2" y="30" width="36" height="1.5" rx="1" fill="#eee"/>
+<rect x="2" y="34" width="40" height="1.5" rx="1" fill="#eee"/>
+<rect x="2" y="40" width="44" height="2" rx="1" fill="#ddd"/>
+<rect x="2" y="44" width="30" height="1.5" rx="1" fill="#eee"/>
+<rect x="50" y="26" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="50" y="30" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="50" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="50" y="40" width="20" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">ÉPURÉ</div></div>
+    <div class="tpl" data-t="soft" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="28" height="60" fill="#8067cc"/>
+<circle cx="14" cy="12" r="5" fill="rgba(255,255,255,.4)"/>
+<rect x="7" y="19" width="14" height="2" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="9" y="23" width="10" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="33" y="8" width="30" height="2.5" rx="1" fill="#ddd"/>
+<rect x="33" y="13" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="20" width="28" height="1.5" rx="1" fill="#ddd"/>
+<rect x="33" y="24" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="28" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="33" y="41" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="45" width="23" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">DÉGRADÉ</div></div>
+    <div class="tpl" data-t="gold" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="28" height="60" fill="#c9a84c"/>
+<circle cx="14" cy="12" r="5" fill="rgba(255,255,255,.4)"/>
+<rect x="7" y="19" width="14" height="2" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="9" y="23" width="10" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="33" y="8" width="30" height="2.5" rx="1" fill="#ddd"/>
+<rect x="33" y="13" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="20" width="28" height="1.5" rx="1" fill="#ddd"/>
+<rect x="33" y="24" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="28" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="33" y="41" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="45" width="23" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">OR</div></div>
+    <div class="tpl" data-t="aqua" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<ellipse cx="15" cy="15" rx="18" ry="14" fill="#e8b4b8" opacity=".3"/>
+<ellipse cx="70" cy="50" rx="20" ry="16" fill="#a8d8ea" opacity=".3"/>
+<ellipse cx="65" cy="8" rx="12" ry="10" fill="#b8e0d2" opacity=".25"/>
+<rect x="5" y="8" width="32" height="3" rx="1" fill="#555" opacity=".6"/>
+<rect x="5" y="14" width="20" height="2" rx="1" fill="#888" opacity=".4"/>
+<rect x="5" y="20" width="44" height="1.5" rx="1" fill="#ccc"/>
+<rect x="5" y="24" width="38" height="1.5" rx="1" fill="#ddd"/>
+<rect x="5" y="32" width="44" height="2" rx="1" fill="#ccc"/>
+<rect x="5" y="37" width="30" height="1.5" rx="1" fill="#ddd"/>
+<rect x="55" y="32" width="22" height="2" rx="1" fill="#ccc"/>
+<rect x="55" y="37" width="18" height="1.5" rx="1" fill="#ddd"/>
+</svg></div><div class="tn">AQUARELLE</div></div>
+    <div class="tpl" data-t="mag" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect x="3" y="5" width="50" height="8" rx="1" fill="#111"/>
+<rect x="3" y="15" width="38" height="2" rx="1" fill="#ddd"/>
+<line x1="0" y1="20" x2="80" y2="20" stroke="#e8450a" stroke-width="2"/>
+<rect x="3" y="24" width="44" height="1.5" rx="1" fill="#ddd"/>
+<rect x="3" y="28" width="36" height="1.5" rx="1" fill="#eee"/>
+<rect x="3" y="32" width="40" height="1.5" rx="1" fill="#eee"/>
+<rect x="3" y="38" width="44" height="2" rx="1" fill="#ddd"/>
+<rect x="3" y="43" width="30" height="1.5" rx="1" fill="#eee"/>
+<line x1="52" y1="22" x2="52" y2="58" stroke="#eee" stroke-width="1"/>
+<rect x="55" y="24" width="22" height="2" rx="1" fill="#ddd"/>
+<rect x="55" y="29" width="18" height="1.5" rx="1" fill="#eee"/>
+<rect x="55" y="36" width="22" height="2" rx="1" fill="#ddd"/>
+<rect x="55" y="41" width="16" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">MAGAZINE</div></div>
+    <div class="tpl" data-t="neon" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#0a0a0f"/>
+<line x1="0" y1="10" x2="80" y2="18" stroke="#7df9ff" stroke-width="0.5" opacity=".3"/>
+<line x1="0" y1="30" x2="80" y2="38" stroke="#7df9ff" stroke-width="0.5" opacity=".2"/>
+<line x1="0" y1="50" x2="80" y2="58" stroke="#7df9ff" stroke-width="0.5" opacity=".2"/>
+<rect x="2" y="4" width="30" height="3" rx="1" fill="#fff" opacity=".8"/>
+<rect x="2" y="10" width="20" height="2" rx="1" fill="#7df9ff" opacity=".7"/>
+<line x1="0" y1="18" x2="80" y2="18" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+<rect x="2" y="22" width="22" height="2" rx="1" fill="#7df9ff" opacity=".4"/>
+<rect x="2" y="26" width="16" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="2" y="30" width="18" height="1.5" rx="1" fill="rgba(255,255,255,.2)"/>
+<line x1="28" y1="19" x2="28" y2="58" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+<rect x="32" y="22" width="28" height="1.5" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="32" y="26" width="20" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="32" y="32" width="28" height="2" rx="1" fill="#7df9ff" opacity=".4"/>
+<rect x="32" y="37" width="22" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="32" y="41" width="26" height="1.5" rx="1" fill="rgba(255,255,255,.2)"/>
+</svg></div><div class="tn">NÉON</div></div>
+    <div class="tpl" data-t="luxe" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect x="10" y="4" width="60" height="1" fill="#c9a84c" opacity=".3"/>
+<text x="40" y="13" text-anchor="middle" font-size="8" font-weight="bold" fill="#111" letter-spacing="2">NOM PRENOM</text>
+<text x="40" y="19" text-anchor="middle" font-size="5" fill="#888" letter-spacing="1">TITRE DU POSTE</text>
+<rect x="10" y="22" width="60" height="1" fill="#c9a84c" opacity=".3"/>
+<text x="40" y="29" text-anchor="middle" font-size="4" fill="#c9a84c" opacity=".6" letter-spacing="1">* PROFIL *</text>
+<rect x="5" y="32" width="33" height="1.5" rx="1" fill="#ddd"/>
+<rect x="5" y="36" width="28" height="1.5" rx="1" fill="#eee"/>
+<rect x="5" y="40" width="30" height="1.5" rx="1" fill="#eee"/>
+<line x1="41" y1="30" x2="41" y2="58" stroke="#eee" stroke-width="1"/>
+<rect x="44" y="32" width="33" height="1.5" rx="1" fill="#ddd"/>
+<rect x="44" y="36" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="44" y="42" width="33" height="1.5" rx="1" fill="#ddd"/>
+<rect x="44" y="46" width="20" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">LUXE</div></div>
+    <div class="tpl" data-t="nat" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<rect width="28" height="60" fill="#2d6b28"/>
+<circle cx="14" cy="12" r="5" fill="rgba(255,255,255,.4)"/>
+<rect x="7" y="19" width="14" height="2" rx="1" fill="rgba(255,255,255,.5)"/>
+<rect x="9" y="23" width="10" height="1.5" rx="1" fill="rgba(255,255,255,.3)"/>
+<rect x="33" y="8" width="30" height="2.5" rx="1" fill="#ddd"/>
+<rect x="33" y="13" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="20" width="28" height="1.5" rx="1" fill="#ddd"/>
+<rect x="33" y="24" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="28" width="25" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="36" width="28" height="2" rx="1" fill="#ddd"/>
+<rect x="33" y="41" width="20" height="1.5" rx="1" fill="#eee"/>
+<rect x="33" y="45" width="23" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">NATURE</div></div>
+    <div class="tpl" data-t="geo" onclick="selTpl(this)"><div class="tp" style="padding:0;overflow:hidden"><svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+<rect width="80" height="60" fill="#fff"/>
+<polygon points="80,0 40,0 80,25" fill="#1a1a2e" opacity=".8"/>
+<polygon points="80,20 50,60 80,60" fill="#1a1a2e" opacity=".5"/>
+<polygon points="80,40 60,60 80,60" fill="#e8450a" opacity=".6"/>
+<rect x="3" y="6" width="28" height="3" rx="1" fill="#333"/>
+<rect x="3" y="12" width="20" height="2" rx="1" fill="#e8450a"/>
+<rect x="3" y="18" width="34" height="1.5" rx="1" fill="#ddd"/>
+<rect x="3" y="22" width="28" height="1.5" rx="1" fill="#eee"/>
+<rect x="3" y="28" width="34" height="2" rx="1" fill="#ddd"/>
+<rect x="3" y="33" width="22" height="1.5" rx="1" fill="#eee"/>
+<rect x="43" y="6" width="24" height="2" rx="1" fill="#ddd"/>
+<rect x="43" y="11" width="18" height="1.5" rx="1" fill="#eee"/>
+<rect x="43" y="18" width="24" height="2" rx="1" fill="#ddd"/>
+<rect x="43" y="23" width="16" height="1.5" rx="1" fill="#eee"/>
+</svg></div><div class="tn">GÉO</div></div>
+  </div>
+
+
+
+  <h2>Langue</h2>
+  <div class="langs">
+    <button class="lb active" data-l="francais" onclick="selL(this)">FR</button>
+    <button class="lb" data-l="anglais" onclick="selL(this)">EN</button>
+    <button class="lb" data-l="espagnol" onclick="selL(this)">ES</button>
+    <button class="lb" data-l="allemand" onclick="selL(this)">DE</button>
+    <button class="lb" data-l="italien" onclick="selL(this)">IT</button>
+    <button class="lb" data-l="portugais" onclick="selL(this)">PT</button>
+    <button class="lb" data-l="arabe" onclick="selL(this)">AR</button>
+  </div>
+
+  <h2>Type de candidature</h2>
+  <div class="modes">
+    <button class="mb active" id="mC" onclick="setMode('cible')">Entreprise precise</button>
+    <button class="mb" id="mG" onclick="setMode('general')">Candidature generale</button>
+  </div>
+
+  <h2>Informations du client</h2>
+  <div class="row2">
+    <div class="fg"><label>Prenom et Nom *</label><input id="nom" placeholder="Marie Dupont"></div>
+    <div class="fg"><label>Poste vise (optionnel)</label><input id="poste" placeholder="Laisser vide si aucun"></div>
+  </div>
+  <div class="row2">
+    <div class="fg"><label>Email</label><input id="email" placeholder="marie@email.com"></div>
+    <div class="fg"><label>Telephone</label><input id="tel" placeholder="+33 6 12 34 56"></div>
+  </div>
+  <div class="row2">
+    <div class="fg"><label>Ville</label><input id="ville" placeholder="Paris, France"></div>
+    <div class="fg"><label>LinkedIn</label><input id="linkedin" placeholder="linkedin.com/in/marie"></div>
+  </div>
+
+  <div id="bCible" style="margin-top:11px">
+    <div class="row2">
+      <div class="fg"><label>Entreprise cible</label><input id="entreprise" placeholder="Google, LVMH..."></div>
+      <div class="fg"><label>Info entreprise</label><input id="infoEnt" placeholder="startup en croissance..."></div>
+    </div>
+  </div>
+  <div id="bGeneral" style="display:none;margin-top:11px">
+    <div class="fg"><label>Domaine vise</label><input id="domaine" placeholder="marketing digital, dev web..."></div>
+  </div>
+
+  <div class="row2" style="margin-top:11px">
+    <div class="fg"><label>Secteur</label>
+      <select id="secteur">
+        <option value="">Selectionnez...</option>
+        <option>Tech et Informatique</option>
+        <option>Marketing et Communication</option>
+        <option>Commerce et Vente</option>
+        <option>Finance et Comptabilite</option>
+        <option>Sante et Medical</option>
+        <option>Education</option>
+        <option>Hotellerie et Restauration</option>
+        <option>BTP</option>
+        <option>Art et Design</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    <div class="fg"><label>Niveau</label>
+      <select id="niveau">
+        <option value="debutant">Debutant (moins 2 ans)</option>
+        <option value="intermediaire" selected>Intermediaire (2-5 ans)</option>
+        <option value="confirme">Confirme (plus 5 ans)</option>
+        <option value="reconversion">Reconversion</option>
+        <option value="jeune diplome">Jeune diplome</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fg" style="margin-top:11px">
+    <label>Experiences professionnelles *</label>
+    <textarea id="exp" placeholder="Ex : 3 ans chef de projet chez Renault, 2 ans consultant Deloitte..."></textarea>
+  </div>
+  <div class="fg" style="margin-top:11px">
+    <label>Formation et Diplomes</label>
+    <textarea id="formation" placeholder="Master HEC 2020, Licence Paris 1..." style="min-height:55px"></textarea>
+  </div>
+  <div class="row2" style="margin-top:11px">
+    <div class="fg"><label>Competences et Outils</label><textarea id="competences" placeholder="Excel, Python, Photoshop..." style="min-height:55px"></textarea></div>
+    <div class="fg"><label>Langues parlees</label><textarea id="langues" placeholder="Francais natif, Anglais C1..." style="min-height:55px"></textarea></div>
+  </div>
+  <div class="row2" style="margin-top:11px">
+    <div class="fg"><label>Ton</label>
+      <select id="ton">
+        <option value="professionnel et dynamique">Pro et Dynamique</option>
+        <option value="formel et classique">Formel et Classique</option>
+        <option value="moderne et enthousiaste">Moderne et Enthousiaste</option>
+        <option value="creatif">Creatif et Original</option>
+      </select>
+    </div>
+    <div class="fg"><label>Documents a generer</label>
+      <select id="docMode">
+        <option value="both">CV + Lettre de motivation</option>
+        <option value="cv">CV seulement</option>
+        <option value="letter">Lettre seulement</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="err" id="errBox">Remplis au minimum : Nom et Experiences.</div>
+  <button class="genbtn" onclick="generate()">Generer les documents</button>
+</div>
+
+<div class="loading" id="loadDiv">
+  <div class="ring"></div>
+  <h3>Generation en cours...</h3>
+  <p>Claude redige vos documents</p>
+</div>
+
+<div class="result" id="resDiv">
+  <div class="rtbar">
+    <div><h3>Documents prets</h3><span class="rbadge" id="pillLang">Francais</span></div>
+    <div class="rbts">
+      <button class="rbtn pr" onclick="printCV()">PDF</button>
+      <button class="rbtn" id="copyBtn" onclick="copyLtr()">Copier lettre</button>
+      <button class="rbtn" onclick="resetAll()">Nouveau</button>
+    </div>
+  </div>
+  <div class="otabs">
+    <button class="otab active" id="tabCV" onclick="showTab('cv')">CV Visuel</button>
+    <button class="otab" id="tabLtr" onclick="showTab('ltr')">Lettre</button>
+  </div>
+  <div class="cvwrap" id="cvWrap"><div id="cvOut"></div></div>
+  <div class="ltrwrap" id="ltrOut"></div>
+</div>
+</div>
+
+<script>
+var AKEY = atob("c2stYW50LWFwaTAzLS1weTZpMGVDTWY3MjRzVHRIVV9kTEFNLTNTUHNnei01ZmI3NW5iRkxyQmo2NjNhUDkxQ3Yxd0g5dFQ0X2lNS0VPc21UM2dOWER5Qm1xWDFpb2Z4OGZRLUFlSFlFQUFB");
+var curTpl='modern', curColor='#1a1a2e', curLang='francais', curMode='cible', photoB64=null;
+
+function loadPhoto(e){
+  var f=e.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    photoB64=ev.target.result;
+    document.getElementById('pPh').style.display='none';
+    document.getElementById('pPv').style.display='block';
+    document.getElementById('phImg').src=photoB64;
+  };
+  r.readAsDataURL(f);
+}
+function selTpl(el){document.querySelectorAll('.tpl').forEach(function(t){t.classList.remove('active')});el.classList.add('active');curTpl=el.getAttribute('data-t')}
+function selC(el){document.querySelectorAll('.cdot').forEach(function(d){d.classList.remove('active')});el.classList.add('active');curColor=el.getAttribute('data-c')}
+function selL(el){document.querySelectorAll('.lb').forEach(function(b){b.classList.remove('active')});el.classList.add('active');curLang=el.getAttribute('data-l')}
+function setMode(m){
+  curMode=m;
+  document.getElementById('mC').classList.toggle('active',m==='cible');
+  document.getElementById('mG').classList.toggle('active',m==='general');
+  document.getElementById('bCible').style.display=m==='cible'?'block':'none';
+  document.getElementById('bGeneral').style.display=m==='general'?'block':'none';
+}
+function showTab(t){
+  document.getElementById('cvWrap').style.display=t==='cv'?'block':'none';
+  document.getElementById('ltrOut').style.display=t==='ltr'?'block':'none';
+  document.querySelectorAll('.otab').forEach(function(x){x.classList.remove('active')});
+  document.getElementById(t==='cv'?'tabCV':'tabLtr').classList.add('active');
+}
+function printCV(){
+  var h=document.getElementById('cvOut').innerHTML;
+  var w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Plus Jakarta Sans\',sans-serif}'+document.querySelector('style').textContent+'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>'+h+'</body></html>');
+  w.document.close();setTimeout(function(){w.print()},800);
+}
+function copyLtr(){
+  var t=document.getElementById('ltrOut').textContent;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=document.getElementById('copyBtn');b.textContent='Copie!';
+    setTimeout(function(){b.textContent='Copier lettre'},2000);
+  });
+}
+function resetAll(){
+  document.getElementById('resDiv').style.display='none';
+  document.getElementById('formCard').style.display='block';
+}
+function g(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+
+async function generate(){
+  var nom=g('nom'), exp=g('exp');
+  var err=document.getElementById('errBox');
+  if(!nom||!exp){err.style.display='block';return;}
+  err.style.display='none';
+
+  var docMode=g('docMode');
+  var cible=curMode==='cible'
+    ?('Entreprise: '+(g('entreprise')||'non precisee')+', Info: '+(g('infoEnt')||'aucune'))
+    :('Candidature GENERALE, Domaine: '+(g('domaine')||'non precise'));
+
+  document.getElementById('formCard').style.display='none';
+  document.getElementById('loadDiv').style.display='block';
+  document.getElementById('resDiv').style.display='none';
+
+  var prompt = 'Tu es expert RH. Genere les documents EN '+curLang.toUpperCase()+'.\n';
+  prompt += 'REGLE ABSOLUE: Reponds UNIQUEMENT avec du JSON valide. Zero texte avant ou apres. Zero markdown.\n\n';
+  prompt += 'FORMAT EXACT REQUIS:\n';
+  prompt += '{"cv":{"name":"...","title":"...","email":"...","phone":"...","location":"...","linkedin":"...","profile":"profil pro 3 lignes","experiences":[{"title":"...","company":"...","date":"...","description":"..."}],"education":[{"degree":"...","school":"...","date":"..."}],"skills":["s1","s2","s3","s4","s5"],"languages":["Langue niveau"],"skillLevels":[{"name":"skill","level":80}]},"letter":"lettre complete 250 mots en '+curLang+'"}\n\n';
+  prompt += 'DONNEES:\n';
+  prompt += 'Nom: '+nom+' | Poste: '+(g('poste')||'non precise')+' | '+cible+'\n';
+  prompt += 'Email: '+(g('email')||'-')+' | Tel: '+(g('tel')||'-')+' | Ville: '+(g('ville')||'-')+'\n';
+  prompt += 'Secteur: '+(g('secteur')||'-')+' | Niveau: '+g('niveau')+' | Ton: '+g('ton')+'\n';
+  prompt += 'Experiences: '+exp+'\n';
+  prompt += 'Formation: '+(g('formation')||'-')+'\n';
+  prompt += 'Competences: '+(g('competences')||'-')+'\n';
+  prompt += 'Langues: '+(g('langues')||'-');
+
+  try{
+    var res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-api-key":AKEY,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:4000,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+
+    var data=await res.json();
+
+    if(data.error){
+      throw new Error('API Error: '+data.error.message);
+    }
+
+    var raw=data.content&&data.content[0]?data.content[0].text:'{}';
+    raw=raw.trim();
+
+    // Clean markdown if present
+    raw=raw.replace(/```json/g,'').replace(/```/g,'').trim();
+
+    // Find JSON boundaries
+    var start=raw.indexOf('{');
+    var end=raw.lastIndexOf('}');
+    if(start>=0&&end>=0&&end>start){
+      raw=raw.substring(start,end+1);
+    }
+
+    var p={};
+    try{
+      p=JSON.parse(raw);
+    }catch(parseErr){
+      // Show raw text as letter fallback
+      document.getElementById('ltrOut').textContent=raw;
+      p={cv:null,letter:raw};
+    }
+
+    if((docMode==='both'||docMode==='cv')&&p.cv){
+      renderCV(p.cv);
+    }
+    if((docMode==='both'||docMode==='letter')&&p.letter){
+      document.getElementById('ltrOut').textContent=p.letter;
+    }
+
+    if(docMode==='letter'){
+      document.getElementById('tabCV').style.display='none';
+      showTab('ltr');
+    } else if(docMode==='cv'){
+      document.getElementById('tabLtr').style.display='none';
+      showTab('cv');
+    } else {
+      document.getElementById('tabCV').style.display='';
+      document.getElementById('tabLtr').style.display='';
+      showTab('cv');
+    }
+
+    document.getElementById('pillLang').textContent=curLang.charAt(0).toUpperCase()+curLang.slice(1);
+    document.getElementById('loadDiv').style.display='none';
+    document.getElementById('resDiv').style.display='block';
+
+  }catch(e){
+    document.getElementById('loadDiv').style.display='none';
+    document.getElementById('formCard').style.display='block';
+    err.textContent='Erreur: '+e.message;
+    err.style.display='block';
+  }
+}
+
+function renderCV(cv){
+  var c=curColor;
+  var photo=photoB64?('<div class="cv-ph"><img src="'+photoB64+'" alt=""></div>'):'';
+  var contacts='';
+  if(cv.email) contacts+='<div class="ci">&#9993; <span>'+cv.email+'</span></div>';
+  if(cv.phone) contacts+='<div class="ci">&#128222; <span>'+cv.phone+'</span></div>';
+  if(cv.location) contacts+='<div class="ci">&#128205; <span>'+cv.location+'</span></div>';
+  if(cv.linkedin) contacts+='<div class="ci">&#128279; <span>'+cv.linkedin+'</span></div>';
+  var skBars='';
+  if(cv.skillLevels){
+    if(curTpl==='elegant'){
+      cv.skillLevels.slice(0,5).forEach(function(s){var f=Math.round(s.level/20);var d='';for(var i=0;i<5;i++){d+='<span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px;background:'+(i<f?'rgba(255,255,255,.85)':'rgba(255,255,255,.2)')+'"></span>';}skBars+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span class="skbl">'+s.name+'</span><span>'+d+'</span></div>';});
+    } else {
+      cv.skillLevels.slice(0,5).forEach(function(s){skBars+='<div class="skb"><div class="skbl">'+s.name+'</div><div class="skbar"><div class="skbf" style="width:'+s.level+'%"></div></div></div>';});
+    }
+  }
+  var langList='';
+  if(cv.languages) cv.languages.forEach(function(l){langList+='<div class="li">'+l+'</div>';});
+  var expH='';
+  if(cv.experiences) cv.experiences.forEach(function(e){expH+='<div class="eit" style="border-color:'+c+'55"><div class="edt">'+(e.date||'')+'</div><div class="eti">'+(e.title||'')+'</div><div class="eco" style="color:'+c+'">'+(e.company||'')+'</div><div class="ede">'+(e.description||'')+'</div></div>';});
+  var eduH='';
+  if(cv.education) cv.education.forEach(function(e){eduH+='<div class="edit"><div class="edg">'+(e.degree||'')+'</div><div class="esc" style="color:'+c+'">'+(e.school||'')+'</div><div class="edt2">'+(e.date||'')+'</div></div>';});
+  var skCloud='<div class="skc">';
+  if(cv.skills) cv.skills.forEach(function(s){skCloud+='<span class="skt" style="background:'+c+'18;color:'+c+';border:1px solid '+c+'30">'+s+'</span>';});
+  skCloud+='</div>';
+  function secH(t){return '<div class="sech" style="color:'+c+'"><h3>'+t+'</h3></div>';}
+  var html='';
+  if(curTpl==='bold'){
+    var bP=photoB64?('<div class="tpl-bold-photo"><img src="'+photoB64+'" alt=""></div>'):'';
+    var bC='';
+    if(cv.email) bC+='<span>&#9993; '+cv.email+'</span>';
+    if(cv.phone) bC+='<span>&#128222; '+cv.phone+'</span>';
+    if(cv.location) bC+='<span>&#128205; '+cv.location+'</span>';
+    html='<div class="tpl-bold-wrap" style="--tcolor:'+c+'"><div class="tpl-bold-banner">'+bP+'<div class="tpl-bold-info"><div class="cv-n">'+(cv.name||'')+'</div><div class="cv-t">'+(cv.title||'')+'</div><div class="tpl-bold-contacts">'+bC+'</div></div></div><div class="tpl-bold-grid"><div class="tpl-bold-col">';
+    if(cv.profile) html+=secH('Profil')+'<p class="pp">'+cv.profile+'</p><br>';
+    if(cv.experiences&&cv.experiences.length) html+=secH('Experiences')+expH;
+    html+='</div><div class="tpl-bold-col2">';
+    if(cv.education&&cv.education.length) html+=secH('Formation')+eduH;
+    if(cv.skills&&cv.skills.length) html+='<br>'+secH('Competences')+skCloud;
+    if(cv.languages&&cv.languages.length){html+='<br>'+secH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:13px;margin-bottom:4px;color:#555">'+l+'</div>';});}
+    html+='</div></div></div>';
+  } else if(curTpl==='minimal'){
+    var ph=photoB64?('<div class="cvmin-ph"><img src="'+photoB64+'" alt=""></div>'):'';
+    html='<div class="cvmin"><div class="hr">'+ph+'<div><div class="cvmin-n">'+(cv.name||'')+'</div><div class="cvmin-t">'+(cv.title||'')+'</div><div class="crow">';
+    if(cv.email) html+='<span>'+cv.email+'</span>';
+    if(cv.phone) html+='<span>'+cv.phone+'</span>';
+    if(cv.location) html+='<span>'+cv.location+'</span>';
+    html+='</div></div></div><div class="two"><div>';
+    if(cv.profile) html+=secH('Profil')+'<p class="pp">'+cv.profile+'</p><br>';
+    if(cv.experiences&&cv.experiences.length) html+=secH('Experiences')+expH;
+    html+='</div><div>';
+    if(cv.education&&cv.education.length) html+=secH('Formation')+eduH;
+    if(cv.skills&&cv.skills.length) html+='<br>'+secH('Competences')+skCloud;
+    if(cv.languages&&cv.languages.length){html+='<br>'+secH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:12.5px;margin-bottom:4px;color:#666">'+l+'</div>';});}
+    html+='</div></div></div>';
+  } else {
+    var sbBg=c;
+    var sbPh=photo;
+    if(curTpl==='soft') sbBg='linear-gradient(160deg,'+c+','+c+'99)';
+    if(curTpl==='elegant'&&photoB64) sbPh='<div class="cv-ph" style="border-radius:10px"><img src="'+photoB64+'" alt=""></div>';
+    if(curTpl==='elegant'&&!photoB64) sbPh='';
+    var mnBg='';
+    var nameColor='';
+    var sbhStyle='';
+    var ciStyle='';
+    if(curTpl==='gold'){
+      sbBg='linear-gradient(160deg,#c9a84c,#a07830)';
+      mnBg='background:#fffdf8';
+      nameColor='color:#f5e09a';
+      sbhStyle='color:rgba(245,224,154,.35);border-bottom-color:rgba(245,224,154,.1)';
+      ciStyle='color:rgba(245,224,154,.75)';
+      var ga='#d4af37';
+      c=ga;
+      expH='';
+      if(cv.experiences) cv.experiences.forEach(function(e){expH+='<div class="eit" style="border-color:'+ga+'55"><div class="edt">'+(e.date||'')+'</div><div class="eti">'+(e.title||'')+'</div><div class="eco" style="color:'+ga+'">'+(e.company||'')+'</div><div class="ede">'+(e.description||'')+'</div></div>';});
+      eduH='';
+      if(cv.education) cv.education.forEach(function(e){eduH+='<div class="edit"><div class="edg">'+(e.degree||'')+'</div><div class="esc" style="color:'+ga+'">'+(e.school||'')+'</div><div class="edt2">'+(e.date||'')+'</div></div>';});
+      skCloud='<div class="skc">';
+      if(cv.skills) cv.skills.forEach(function(s){skCloud+='<span class="skt" style="background:'+ga+'18;color:'+ga+';border:1px solid '+ga+'30">'+s+'</span>';});
+      skCloud+='</div>';
+      skBars='';
+      if(cv.skillLevels) cv.skillLevels.slice(0,5).forEach(function(s){skBars+='<div class="skb"><div class="skbl" style="color:rgba(245,224,154,.8)">'+s.name+'</div><div class="skbar" style="background:rgba(212,175,55,.2)"><div class="skbf" style="width:'+s.level+'%;background:rgba(212,175,55,.75)"></div></div></div>';});
+      langList='';
+      if(cv.languages) cv.languages.forEach(function(l){langList+='<div class="li" style="color:rgba(245,224,154,.75)">'+l+'</div>';});
+      contacts='';
+      if(cv.email) contacts+='<div class="ci" style="'+ciStyle+'">&#9993; <span>'+cv.email+'</span></div>';
+      if(cv.phone) contacts+='<div class="ci" style="'+ciStyle+'">&#128222; <span>'+cv.phone+'</span></div>';
+      if(cv.location) contacts+='<div class="ci" style="'+ciStyle+'">&#128205; <span>'+cv.location+'</span></div>';
+      if(cv.linkedin) contacts+='<div class="ci" style="'+ciStyle+'">&#128279; <span>'+cv.linkedin+'</span></div>';
+    }
+    html='<div class="cvm"><div class="sb" style="background:'+sbBg+'">'+sbPh+'<div><div class="cv-n" style="'+nameColor+'">'+(cv.name||'')+'</div><div class="cv-t">'+(cv.title||'')+'</div></div><div><div class="sbh" style="'+sbhStyle+'">Contact</div>'+contacts+'</div>';
+    if(skBars) html+='<div><div class="sbh" style="'+sbhStyle+'">Competences</div>'+skBars+'</div>';
+    if(langList) html+='<div><div class="sbh" style="'+sbhStyle+'">Langues</div>'+langList+'</div>';
+    html+='</div><div class="mn" style="'+mnBg+'">';
+    if(cv.profile) html+='<div>'+secH('Profil')+'<p class="pp">'+cv.profile+'</p></div>';
+    if(cv.experiences&&cv.experiences.length) html+='<div>'+secH('Experiences')+expH+'</div>';
+    if(cv.education&&cv.education.length) html+='<div>'+secH('Formation')+eduH+'</div>';
+    if(cv.skills&&cv.skills.length) html+='<div>'+secH('Competences')+skCloud+'</div>';
+    html+='</div></div>';
+  }
+
+  // AQUARELLE
+  if(curTpl==='aqua'){
+    var aqC=c;
+    var aqPhoto=photoB64?('<div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid '+aqC+'44;float:right;margin-left:16px"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    var aqSvg='<svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;opacity:.25"><ellipse cx="80" cy="100" rx="120" ry="100" fill="'+aqC+'" opacity=".4"/><ellipse cx="350" cy="80" rx="80" ry="70" fill="'+aqC+'" opacity=".25"/><ellipse cx="320" cy="400" rx="140" ry="120" fill="'+aqC+'" opacity=".3"/><ellipse cx="60" cy="500" rx="90" ry="80" fill="'+aqC+'" opacity=".2"/><ellipse cx="200" cy="280" rx="60" ry="50" fill="'+aqC+'" opacity=".15"/></svg>';
+    var aqContacts='';
+    if(cv.email) aqContacts+='<span style="font-size:12px;color:#555">&#9993; '+cv.email+'</span>';
+    if(cv.phone) aqContacts+='<span style="font-size:12px;color:#555">&#128222; '+cv.phone+'</span>';
+    if(cv.location) aqContacts+='<span style="font-size:12px;color:#555">&#128205; '+cv.location+'</span>';
+    var aqSecH=function(t){return '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid '+aqC+'">'+t+'</div>';};
+    html='<div class="tpl-aqua-wrap"><div class="tpl-aqua-bg">'+aqSvg+'</div><div class="tpl-aqua-content">';
+    html+='<div style="margin-bottom:22px">'+aqPhoto+'<div style="font-family:Fraunces,serif;font-size:28px;line-height:1.1;margin-bottom:4px;color:#111">'+(cv.name||'')+'</div><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;color:'+aqC+'">'+(cv.title||'')+'</div><div style="display:flex;flex-wrap:wrap;gap:12px;clear:both">'+aqContacts+'</div></div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 190px;gap:24px">';
+    html+='<div>';
+    if(cv.profile) html+=aqSecH('Profil')+'<p class="pp" style="margin-bottom:16px">'+cv.profile+'</p>';
+    if(cv.experiences&&cv.experiences.length) html+=aqSecH('Experiences')+expH;
+    html+='</div><div>';
+    if(cv.education&&cv.education.length) html+=aqSecH('Formation')+eduH;
+    if(cv.skills&&cv.skills.length) html+=aqSecH('Competences')+skCloud;
+    if(cv.languages&&cv.languages.length){html+=aqSecH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:12px;margin-bottom:4px;color:#555">'+l+'</div>';});}
+    html+='</div></div></div></div>';
+  }
+  // MAGAZINE
+  else if(curTpl==='mag'){
+    var mgSecH=function(t){return '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-top:3px solid '+c+';padding-top:6px">'+t+'</div>';};
+    var mgPhoto=photoB64?('<div style="width:80px;height:80px;border-radius:4px;overflow:hidden;margin-bottom:12px"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    html='<div class="tpl-mag-wrap"><div style="padding:28px 32px 18px;border-bottom:4px solid '+c+'">';
+    html+='<div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;color:'+c+'">CURRICULUM VITAE</div>';
+    html+='<div style="font-family:Fraunces,serif;font-size:40px;line-height:1;margin-bottom:5px;font-weight:900;color:#111">'+(cv.name||'')+'</div>';
+    html+='<div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#666">'+(cv.title||'')+'</div></div>';
+    html+='<div style="display:grid;grid-template-columns:2fr 1px 1fr"><div style="padding:22px 26px">';
+    if(cv.profile) html+=mgSecH('Profil')+'<p class="pp" style="margin-bottom:18px">'+cv.profile+'</p>';
+    if(cv.experiences&&cv.experiences.length) html+=mgSecH('Experiences')+expH;
+    html+='</div><div style="background:#eee"></div><div style="padding:22px 18px;background:#fafafa">'+mgPhoto;
+    if(cv.email||cv.phone||cv.location){
+      html+=mgSecH('Contact');
+      if(cv.email) html+='<div style="font-size:11.5px;margin-bottom:5px;color:#555">'+cv.email+'</div>';
+      if(cv.phone) html+='<div style="font-size:11.5px;margin-bottom:5px;color:#555">'+cv.phone+'</div>';
+      if(cv.location) html+='<div style="font-size:11.5px;margin-bottom:14px;color:#555">'+cv.location+'</div>';
+    }
+    if(cv.education&&cv.education.length) html+=mgSecH('Formation')+eduH;
+    if(cv.skills&&cv.skills.length) html+=mgSecH('Competences')+skCloud;
+    if(cv.languages&&cv.languages.length){html+=mgSecH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:12px;margin-bottom:4px;color:#555">'+l+'</div>';});}
+    html+='</div></div></div>';
+  }
+  // NEON
+  else if(curTpl==='neon'){
+    var neonC=c;
+    var neonSecH=function(t){return '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid '+neonC+'44;color:'+neonC+'">'+t+'</div>';};
+    var neonLines='';
+    for(var i=0;i<8;i++) neonLines+='<line x1="0" y1="'+(i*80)+'" x2="400" y2="'+(i*80+40)+'" stroke="'+neonC+'" stroke-width="0.5" opacity="0.3"/>';
+    var neonSvg='<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;opacity:.15">'+neonLines+'<circle cx="380" cy="20" r="60" fill="none" stroke="'+neonC+'" stroke-width="1" opacity="0.5"/><circle cx="20" cy="480" r="40" fill="none" stroke="'+neonC+'" stroke-width="0.8" opacity="0.4"/></svg>';
+    var neonPhoto=photoB64?('<div style="width:70px;height:70px;border-radius:50%;overflow:hidden;border:2px solid '+neonC+'66;margin-right:18px;flex-shrink:0"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    var neonContacts='';
+    if(cv.email) neonContacts+='<span style="font-size:11px;color:rgba(255,255,255,.6);margin-right:14px">&#9993; '+cv.email+'</span>';
+    if(cv.phone) neonContacts+='<span style="font-size:11px;color:rgba(255,255,255,.6);margin-right:14px">&#128222; '+cv.phone+'</span>';
+    if(cv.location) neonContacts+='<span style="font-size:11px;color:rgba(255,255,255,.6)">&#128205; '+cv.location+'</span>';
+    html='<div style="min-height:500px;background:#0a0a0f;color:#e0e0ff;position:relative;overflow:hidden">'+neonSvg;
+    html+='<div style="position:relative;z-index:1"><div style="padding:26px 26px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center">'+neonPhoto+'<div><div style="font-family:Fraunces,serif;font-size:24px;color:#fff;margin-bottom:3px;line-height:1.2;text-shadow:0 0 20px '+neonC+'88">'+(cv.name||'')+'</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:'+neonC+';margin-bottom:8px">'+(cv.title||'')+'</div><div>'+neonContacts+'</div></div></div>';
+    html+='<div style="display:grid;grid-template-columns:190px 1fr"><div style="padding:20px 16px;border-right:1px solid rgba(255,255,255,.08)">';
+    if(cv.skillLevels&&cv.skillLevels.length){html+=neonSecH('Competences');cv.skillLevels.slice(0,5).forEach(function(s){html+='<div style="margin-bottom:8px"><div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:3px">'+s.name+'</div><div style="height:3px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+s.level+'%;background:'+neonC+';box-shadow:0 0 6px '+neonC+'"></div></div></div>';});}
+    if(cv.languages&&cv.languages.length){html+=neonSecH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:4px">'+l+'</div>';});}
+    html+='</div><div style="padding:20px 22px">';
+    if(cv.profile) html+=neonSecH('Profil')+'<p style="font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.7);margin-bottom:16px">'+cv.profile+'</p>';
+    if(cv.experiences&&cv.experiences.length){html+=neonSecH('Experiences');cv.experiences.forEach(function(e){html+='<div style="margin-bottom:12px;padding-left:10px;border-left:2px solid '+neonC+'66"><div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px">'+(e.date||'')+'</div><div style="font-size:12.5px;font-weight:700;color:#fff;margin-bottom:1px">'+(e.title||'')+'</div><div style="font-size:11.5px;color:'+neonC+';margin-bottom:3px">'+(e.company||'')+'</div><div style="font-size:11.5px;color:rgba(255,255,255,.55);line-height:1.5">'+(e.description||'')+'</div></div>';});}
+    if(cv.education&&cv.education.length){html+=neonSecH('Formation');cv.education.forEach(function(e){html+='<div style="margin-bottom:8px"><div style="font-size:12.5px;font-weight:700;color:#fff">'+(e.degree||'')+'</div><div style="font-size:11.5px;color:'+neonC+'">'+(e.school||'')+'</div><div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase">'+(e.date||'')+'</div></div>';});}
+    html+='</div></div></div></div>';
+  }
+  // LUXE
+  else if(curTpl==='luxe'){
+    var lxC=c;
+    var lxSecH=function(t){return '<div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;text-align:center;color:'+lxC+';opacity:.6">&#10022; '+t+' &#10022;</div>';};
+    var lxPhoto=photoB64?('<div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:2px solid '+lxC+'44;margin:0 auto 14px"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    html='<div style="min-height:500px;background:#fff"><div style="padding:32px 40px 20px;text-align:center;position:relative">'+lxPhoto;
+    html+='<div style="font-size:20px;color:'+lxC+';opacity:.25;margin-bottom:6px;letter-spacing:8px">&#10022;&#10022;&#10022;</div>';
+    html+='<div style="font-family:Fraunces,serif;font-size:28px;letter-spacing:3px;text-transform:uppercase;color:#111;margin-bottom:5px">'+(cv.name||'')+'</div>';
+    html+='<div style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#888;margin-bottom:14px">'+(cv.title||'')+'</div>';
+    html+='<div style="height:1px;background:'+lxC+';opacity:.15;margin:0 20px"></div>';
+    html+='<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:16px;padding:10px 0;font-size:11px;color:#888">';
+    if(cv.email) html+='<span>'+cv.email+'</span>';
+    if(cv.phone) html+='<span>'+cv.phone+'</span>';
+    if(cv.location) html+='<span>'+cv.location+'</span>';
+    html+='</div><div style="height:1px;background:'+lxC+';opacity:.15;margin:0 20px"></div></div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1px 1fr;border-top:1px solid rgba(0,0,0,.06)">';
+    html+='<div style="padding:22px 28px">';
+    if(cv.profile) html+=lxSecH('Profil')+'<p class="pp" style="text-align:center;font-style:italic;margin-bottom:18px">'+cv.profile+'</p>';
+    if(cv.experiences&&cv.experiences.length){html+=lxSecH('Experiences');cv.experiences.forEach(function(e){html+='<div style="margin-bottom:12px;text-align:center"><div style="font-size:9px;color:#aaa;letter-spacing:.5px;text-transform:uppercase">'+(e.date||'')+'</div><div style="font-size:13px;font-weight:700;color:#111">'+(e.title||'')+'</div><div style="font-size:11.5px;color:'+lxC+';margin-bottom:3px">'+(e.company||'')+'</div><div style="font-size:11.5px;color:#666;line-height:1.55">'+(e.description||'')+'</div></div>';});}
+    html+='</div><div style="background:rgba(0,0,0,.06)"></div><div style="padding:22px 28px">';
+    if(cv.education&&cv.education.length){html+=lxSecH('Formation');cv.education.forEach(function(e){html+='<div style="margin-bottom:10px;text-align:center"><div style="font-size:13px;font-weight:700">'+(e.degree||'')+'</div><div style="font-size:11.5px;color:'+lxC+'">'+(e.school||'')+'</div><div style="font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:.5px">'+(e.date||'')+'</div></div>';});}
+    if(cv.skills&&cv.skills.length){html+=lxSecH('Competences');html+='<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">';cv.skills.forEach(function(s){html+='<span style="padding:4px 10px;border:1px solid '+lxC+'44;border-radius:20px;font-size:10.5px;color:'+lxC+'">'+s+'</span>';});html+='</div><br>';}
+    if(cv.languages&&cv.languages.length){html+=lxSecH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:12px;text-align:center;margin-bottom:4px;color:#666">'+l+'</div>';});}
+    html+='</div></div></div>';
+  }
+  // NATURE
+  else if(curTpl==='nat'){
+    var natC=c;
+    var natSvg='<svg viewBox="0 0 220 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;opacity:.15"><path d="M110 50 Q140 20 170 50 Q200 80 170 110 Q140 140 110 110 Q80 80 110 50Z" fill="'+natC+'"/><path d="M50 150 Q90 110 130 150 Q170 190 130 230 Q90 270 50 230 Q10 190 50 150Z" fill="'+natC+'" opacity=".7"/><path d="M130 300 Q160 260 190 300 Q220 340 190 380 Q160 420 130 380 Q100 340 130 300Z" fill="'+natC+'" opacity=".5"/><path d="M30 400 Q70 360 110 400 Q150 440 110 480 Q70 520 30 480 Q-10 440 30 400Z" fill="'+natC+'" opacity=".6"/><path d="M160 480 Q180 450 200 480 Q220 510 200 540 Q180 570 160 540 Q140 510 160 480Z" fill="'+natC+'" opacity=".4"/><line x1="110" y1="50" x2="90" y2="500" stroke="'+natC+'" stroke-width="1.5" opacity=".2"/></svg>';
+    var natPhoto=photoB64?('<div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.3);margin:0 auto 10px"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    var natSecH=function(t){return '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid '+natC+'66;color:'+natC+'">'+t+'</div>';};
+    html='<div style="min-height:500px;position:relative;overflow:hidden"><div style="position:absolute;left:0;top:0;width:220px;height:100%;z-index:0">'+natSvg+'</div>';
+    html+='<div style="position:relative;z-index:1;display:grid;grid-template-columns:200px 1fr;min-height:500px">';
+    html+='<div style="padding:26px 18px;display:flex;flex-direction:column;gap:16px;background:'+natC+'">'+natPhoto;
+    html+='<div><div style="font-family:Fraunces,serif;font-size:20px;color:#fff;text-align:center;margin-bottom:3px;line-height:1.2">'+(cv.name||'')+'</div><div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;text-align:center">'+(cv.title||'')+'</div></div>';
+    html+='<div><div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:7px">Contact</div>';
+    if(cv.email) html+='<div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px">&#9993; '+cv.email+'</div>';
+    if(cv.phone) html+='<div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px">&#128222; '+cv.phone+'</div>';
+    if(cv.location) html+='<div style="font-size:11px;color:rgba(255,255,255,.75);margin-bottom:4px">&#128205; '+cv.location+'</div>';
+    html+='</div>';
+    if(skBars) html+='<div><div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:7px">Competences</div>'+skBars+'</div>';
+    if(langList) html+='<div><div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:7px">Langues</div>'+langList+'</div>';
+    html+='</div><div style="padding:26px 22px;background:#fff;display:flex;flex-direction:column;gap:16px">';
+    if(cv.profile) html+='<div>'+natSecH('Profil')+'<p class="pp">'+cv.profile+'</p></div>';
+    if(cv.experiences&&cv.experiences.length) html+='<div>'+natSecH('Experiences')+expH+'</div>';
+    if(cv.education&&cv.education.length) html+='<div>'+natSecH('Formation')+eduH+'</div>';
+    if(cv.skills&&cv.skills.length) html+='<div>'+natSecH('Competences')+skCloud+'</div>';
+    html+='</div></div></div>';
+  }
+  // GEOMETRIQUE
+  else if(curTpl==='geo'){
+    var geoC=c;
+    var geoTriangles='<svg viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><polygon points="300,0 0,0 300,200" fill="'+geoC+'" opacity=".9"/><polygon points="300,150 0,300 300,300" fill="'+geoC+'" opacity=".5"/><polygon points="300,280 100,600 300,600" fill="'+geoC+'" opacity=".7"/><polygon points="0,400 300,500 0,600" fill="'+geoC+'" opacity=".3"/></svg>';
+    var geoPhoto=photoB64?('<div style="width:75px;height:75px;border-radius:4px;overflow:hidden;border:2px solid rgba(255,255,255,.4);margin-bottom:10px"><img src="'+photoB64+'" style="width:100%;height:100%;object-fit:cover" alt=""></div>'):'';
+    var geoSecH=function(t){return '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid '+geoC+'">'+t+'</div>';};
+    html='<div style="min-height:500px;background:#fff;position:relative;overflow:hidden">';
+    html+='<div style="position:absolute;right:0;top:0;width:42%;height:100%;z-index:0">'+geoTriangles+'</div>';
+    html+='<div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;min-height:500px">';
+    html+='<div style="padding:30px 26px">';
+    html+=geoPhoto;
+    html+='<div style="font-family:Fraunces,serif;font-size:24px;line-height:1.1;margin-bottom:3px;color:#111">'+(cv.name||'')+'</div>';
+    html+='<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:'+geoC+';margin-bottom:14px">'+(cv.title||'')+'</div>';
+    html+='<div style="margin-bottom:18px">';
+    if(cv.email) html+='<div style="font-size:11.5px;color:#555;margin-bottom:4px">&#9993; '+cv.email+'</div>';
+    if(cv.phone) html+='<div style="font-size:11.5px;color:#555;margin-bottom:4px">&#128222; '+cv.phone+'</div>';
+    if(cv.location) html+='<div style="font-size:11.5px;color:#555;margin-bottom:4px">&#128205; '+cv.location+'</div>';
+    html+='</div>';
+    if(cv.profile) html+=geoSecH('Profil')+'<p class="pp" style="margin-bottom:16px">'+cv.profile+'</p>';
+    if(cv.education&&cv.education.length) html+=geoSecH('Formation')+eduH;
+    if(cv.languages&&cv.languages.length){html+=geoSecH('Langues');cv.languages.forEach(function(l){html+='<div style="font-size:12px;margin-bottom:4px;color:#555">'+l+'</div>';});}
+    html+='</div><div style="padding:30px 20px 30px 16px">';
+    if(cv.experiences&&cv.experiences.length) html+=geoSecH('Experiences')+expH;
+    if(cv.skills&&cv.skills.length) html+=geoSecH('Competences')+skCloud;
+    html+='</div></div></div>';
+  }
+
+  document.getElementById('cvOut').innerHTML=html;
+}
+</script>
+</body>
+</html>
